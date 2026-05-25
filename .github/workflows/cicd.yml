@@ -1,0 +1,34 @@
+name: React CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            cd /home/ubuntu
+
+            if [ ! -d "proyek-frontend" ]; then
+              git clone https://github.com/adnini1908-cell/proyek-frontend.git
+            fi
+
+            cd proyek-frontend
+
+            git pull origin main
+
+            docker compose down
+
+            docker compose build
+
+            docker compose up -d
