@@ -1,7 +1,6 @@
-# Stage build React
 FROM node:20-alpine AS build
 
-WORKDIR /var/www/html
+WORKDIR /app
 
 COPY package*.json ./
 
@@ -11,10 +10,9 @@ COPY . .
 
 RUN npm run build
 
-# Stage production pakai nginx
 FROM nginx:stable-alpine
 
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 

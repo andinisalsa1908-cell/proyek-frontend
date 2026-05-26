@@ -1,34 +1,117 @@
-name: React CI/CD
+name: CI/CD React Frontend Docker
 
 on:
   push:
     branches:
       - main
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
-  deploy:
+
+  # ─── JOB 1: TEST & BUILD REACT ───────────────────────────
+  test:
+    name: Test & Build React
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to VPS
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create .env
+        run: |
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env
+
+      - name: Build React App
+        run: npm run build
+
+  # ─── JOB 2: BUILD & PUSH IMAGE ───────────────────────────
+  build-and-push:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image: ${{ steps.meta.outputs.tags }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login ke GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-
+            type=raw,value=latest
+
+      - name: Build & Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ─── JOB 3: DEPLOY KE VPS ────────────────────────────────
+  deploy:
+    name: Deploy ke VPS
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          password: ${{ secrets.VPS_PASSWORD }}
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
           script: |
-            cd /home/ubuntu
+            set -e
 
-            if [ ! -d "proyek-frontend" ]; then
-              git clone https://github.com/adnini1908-cell/proyek-frontend.git
-            fi
+            echo "🚀 Mulai deployment frontend..."
 
-            cd proyek-frontend
+            # Login GHCR
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            git pull origin main
+            # Masuk folder project
+            cd /home/${{ secrets.SERVER_USER }}/proyek-frontend
 
+            # Pull image terbaru
+            docker pull ghcr.io/${{ github.repository }}:latest
+
+            # Restart container
             docker compose down
 
-            docker compose build
+            docker compose up -d --remove-orphans
 
-            docker compose up -d
+            echo "✅ Deployment frontend selesai!"

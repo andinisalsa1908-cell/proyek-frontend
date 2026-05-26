@@ -1,9 +1,11 @@
-version: '3.8'
+version: '3.9'
 
 services:
-  react-app:
-    build: .
-    container_name: react-app
+  frontend:
+    image: ghcr.io/USERNAME/proyek-frontend:latest
+    container_name: frontend
+
     ports:
       - "3004:80"
+
     restart: always
