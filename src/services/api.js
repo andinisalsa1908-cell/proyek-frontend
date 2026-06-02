@@ -1,13 +1,12 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "pendakian/cicd/my/id/api",
+  baseURL: process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// 🔹 Request interceptor
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -25,13 +24,11 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// 🔹 Response interceptor
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.clear();
-      console.log("Unauthorized, redirect login");
     }
 
     return Promise.reject(error);

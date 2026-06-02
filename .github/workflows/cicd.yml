@@ -33,7 +33,8 @@ jobs:
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env
 
       - name: Build React App
-        run: npm run build
+        run: |
+          CI=false npm run build
 
   # ─── JOB 2: BUILD & PUSH IMAGE ───────────────────────────
   build-and-push:

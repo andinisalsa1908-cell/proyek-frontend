@@ -1,7 +1,6 @@
 import API from "../api";
 
 export const login = async (data) => {
-  // 🔥 hapus token lama dulu
   localStorage.removeItem("token");
 
   const res = await API.post("/login", data);
@@ -12,7 +11,11 @@ export const login = async (data) => {
   return res.data;
 };
 
-export const register = (data) => API.post("/register", data);
+export const register = (data) =>
+  API.post("/register", data);
+
+export const forgotPassword = (data) =>
+  API.post("/forgot-password", data);
 
 export const logout = async () => {
   await API.post("/logout");
