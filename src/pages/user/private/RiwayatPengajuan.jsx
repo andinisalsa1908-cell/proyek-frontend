@@ -1,44 +1,45 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
-import {
-  getHistory,
-} from "../../../services/user";
+import { useEffect, useState } from "react";
+import UserPrivateLayout from "../../../layouts/UserPrivateLayout";
+import { getPengajuan } from "../../../services/user/pengajuanService";
 
 export default function RiwayatPengajuan() {
-  const [history, setHistory] =
-    useState([]);
+  const [pengajuan, setPengajuan] = useState([]);
 
   useEffect(() => {
-    fetchHistory();
+    loadPengajuan();
   }, []);
 
-  const fetchHistory = async () => {
+  const loadPengajuan = async () => {
     try {
-      const res = await getHistory();
-      setHistory(res.data || []);
-    } catch (error) {
-      console.log(error);
+      const res = await getPengajuan();
+      setPengajuan(res.data);
+    } catch (err) {
+      console.log(err);
     }
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Riwayat Pendakian</h2>
+    <UserPrivateLayout>
+      <h1 className="text-3xl font-bold mb-6">
+        Riwayat Pengajuan
+      </h1>
 
-      {history.map((item) => (
-        <div
-          key={item.id}
-          className="card p-3 mb-3"
-        >
-          <h5>{item.gunung?.nama}</h5>
+      <div className="space-y-4">
+        {pengajuan.map((item) => (
+          <div
+            key={item.id}
+            className="bg-white p-5 rounded-xl shadow"
+          >
+            <h2 className="font-bold">
+              {item.nama_gunung}
+            </h2>
 
-          <p>{item.tanggal_naik}</p>
+            <p>{item.lokasi}</p>
 
-          <p>{item.status}</p>
-        </div>
-      ))}
-    </div>
+            <p>Status : {item.status}</p>
+          </div>
+        ))}
+      </div>
+    </UserPrivateLayout>
   );
 }

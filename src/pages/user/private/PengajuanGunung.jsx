@@ -1,29 +1,75 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import UserPrivateLayout from "../../../layouts/UserPrivateLayout";
+import { createPengajuan } from "../../../services/user/pengajuanService";
 
 export default function PengajuanGunung() {
-  const [namaGunung, setNamaGunung] = useState("");
+  const [form, setForm] = useState({
+    nama_gunung: "",
+    lokasi: "",
+    deskripsi: "",
+  });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Pengajuan berhasil dikirim");
+
+    try {
+      await createPengajuan(form);
+      alert("Pengajuan berhasil dikirim");
+    } catch (err) {
+      alert("Pengajuan gagal");
+    }
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Pengajuan Gunung Baru</h2>
+    <UserPrivateLayout>
+      <h1 className="text-3xl font-bold mb-6">
+        Pengajuan Gunung
+      </h1>
 
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-xl shadow"
+      >
         <input
-          className="form-control mb-3"
+          type="text"
           placeholder="Nama Gunung"
-          value={namaGunung}
-          onChange={(e) => setNamaGunung(e.target.value)}
+          className="w-full border p-3 rounded mb-4"
+          onChange={(e) =>
+            setForm({
+              ...form,
+              nama_gunung: e.target.value,
+            })
+          }
         />
 
-        <button className="btn btn-primary">
+        <input
+          type="text"
+          placeholder="Lokasi"
+          className="w-full border p-3 rounded mb-4"
+          onChange={(e) =>
+            setForm({
+              ...form,
+              lokasi: e.target.value,
+            })
+          }
+        />
+
+        <textarea
+          placeholder="Deskripsi"
+          className="w-full border p-3 rounded mb-4"
+          rows="5"
+          onChange={(e) =>
+            setForm({
+              ...form,
+              deskripsi: e.target.value,
+            })
+          }
+        />
+
+        <button className="bg-green-600 text-white px-5 py-2 rounded">
           Kirim Pengajuan
         </button>
       </form>
-    </div>
+    </UserPrivateLayout>
   );
 }

@@ -1,101 +1,58 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import UserPrivateLayout from "../../../layouts/UserPrivateLayout";
 import {
   getBookings,
   cancelBooking,
-  downloadBookingPdf,
-} from "../../../services/user";
+} from "../../../services/user/tiketService";
 
 export default function TiketSaya() {
-  const [bookings, setBookings] = useState([]);
+  const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
-    fetchBookings();
+    loadTickets();
   }, []);
 
-  const fetchBookings = async () => {
-    try {
-      const res = await getBookings();
-      setBookings(res.data || []);
-    } catch (error) {
-      console.log(error);
-    }
+  const loadTickets = async () => {
+    const res = await getBookings();
+    setTickets(res.data);
   };
 
   const handleCancel = async (id) => {
-    try {
-      await cancelBooking(id);
-      fetchBookings();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleDownload = async (id) => {
-    try {
-      const response = await downloadBookingPdf(id);
-
-      const url = window.URL.createObjectURL(
-        new Blob([response.data])
-      );
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute(
-        "download",
-        `booking-${id}.pdf`
-      );
-
-      document.body.appendChild(link);
-      link.click();
-    } catch (error) {
-      console.log(error);
-    }
+    await cancelBooking(id);
+    loadTickets();
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Tiket Saya</h2>
+    <UserPrivateLayout>
+      <h1 className="text-3xl font-bold mb-6">
+        Tiket Saya
+      </h1>
 
-      {bookings.length === 0 ? (
-        <p>Belum ada booking.</p>
-      ) : (
-        bookings.map((item) => (
+      <div className="space-y-4">
+        {tickets.map((ticket) => (
           <div
-            key={item.id}
-            className="card p-3 mb-3"
+            key={ticket.id}
+            className="bg-white p-5 rounded-xl shadow"
           >
-            <h5>{item.gunung?.nama}</h5>
+            <h2 className="font-bold">
+              {ticket.gunung}
+            </h2>
 
-            <p>
-              Tanggal: {item.tanggal_naik}
-            </p>
+            <p>{ticket.tanggal}</p>
 
-            <p>
-              Status: {item.status}
-            </p>
+            <p>Status : {ticket.status}</p>
 
-            <div className="d-flex gap-2">
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() =>
-                  handleCancel(item.id)
-                }
-              >
-                Batalkan
-              </button>
-
-              <button
-                className="btn btn-primary btn-sm"
-                onClick={() =>
-                  handleDownload(item.id)
-                }
-              >
-                Download PDF
-              </button>
-            </div>
+            <button
+              onClick={() =>
+                handleCancel(ticket.id)
+              }
+              className="mt-3 bg-red-500 text-white px-4 py-2 rounded"
+            >
+              Batalkan
+            </button>
           </div>
-        ))
-      )}
-    </div>
+        ))}
+      </div>
+    </UserPrivateLayout>
   );
 }

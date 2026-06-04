@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Clock } from 'lucide-react';
+import {
+   Clock,
+   Check,
+} from 'lucide-react';
 
 import {
   getRequests,
@@ -10,7 +13,7 @@ const Pengajuan = () => {
 
   const [dataPermintaan, setDataPermintaan] = useState([]);
 
-  const [userId, setUserId] = useState("");
+  const [email, setEmail] = useState("");
 
   const [basecampId, setBasecampId] = useState("");
 
@@ -70,7 +73,7 @@ const Pengajuan = () => {
   // ================= CREATE REQUEST =================
   const handleTambah = async () => {
 
-    if (!userId) {
+    if (!email) {
       return setNotif({
         type: "error",
         message: "Masukkan user terlebih dahulu",
@@ -87,7 +90,7 @@ const Pengajuan = () => {
     try {
 
       await createRequestAdminBasecamp({
-        user_id: userId,
+        email,
         basecamp_id: basecampId
       });
 
@@ -96,7 +99,7 @@ const Pengajuan = () => {
         message: "Berhasil mengajukan admin basecamp",
       });
 
-      setUserId("");
+      setEmail("");
       setBasecampId("");
 
       fetchRequests();
@@ -158,17 +161,17 @@ const Pengajuan = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-          {/* USER ID */}
+          {/* USER Email */}
           <div className="space-y-2">
             <label className="text-sm font-semibold text-gray-600">
-              ID User
+              Email User
             </label>
 
             <input
-              type="number"
-              placeholder="Masukkan ID User"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
+              type="email"
+              placeholder="Masukan Email User"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-[#f9fafb] border border-gray-200 focus:border-[#24426d] outline-none p-4 rounded-2xl"
             />
           </div>
@@ -258,13 +261,18 @@ const Pengajuan = () => {
 
                 {/* STATUS */}
                 <div className="flex justify-center">
-
-                  <div className="bg-[#24426d] text-white rounded-full p-2">
-                    <Clock size={18} />
+                  <div>
+                    {item.status === "approved" ? (
+                      <div className="bg-green-500 text-white rounded-full p-2">
+                        <Check size={18} />
+                      </div>
+                    ) : (
+                      <div className="bg-[#24426d] text-white rounded-full p-2">
+                        <Clock size={18} />
+                      </div>
+                    )}
                   </div>
-
                 </div>
-
               </div>
             ))
 

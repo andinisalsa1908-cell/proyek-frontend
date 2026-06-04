@@ -6,6 +6,7 @@ const Login = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [password_confirmation, setPasswordConfirmation] = useState('');
   const [nama, setNama] = useState('');
 
   const navigate = useNavigate();
@@ -76,6 +77,7 @@ const Login = () => {
         name: nama,
         email,
         password,
+        password_confirmation,
       });
 
       alert("Register berhasil, silakan login!");
@@ -84,6 +86,7 @@ const Login = () => {
       setNama('');
       setEmail('');
       setPassword('');
+      setPasswordConfirmation('');
 
     } catch (err) {
       console.log(err.response?.data);
@@ -176,6 +179,17 @@ const Login = () => {
               required
               style={inputStyle(colors)}
             />
+
+            {!isLoginMode && (
+              <input
+                type="password"
+                placeholder="Konfirmasi Password"
+                value={password_confirmation}
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                required
+                style={inputStyle(colors)}
+              />
+            )}
 
             <button
               type="submit"

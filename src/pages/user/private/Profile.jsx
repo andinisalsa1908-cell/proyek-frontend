@@ -1,83 +1,73 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
-
-import {
-  getProfile,
-  updateProfile,
-} from "../../../services/user";
+import { useEffect, useState } from "react";
+import { getProfile, updateProfile } from "../../../services/user/userService";
+import UserPrivateLayout from "../../../layouts/UserPrivateLayout";
 
 export default function Profile() {
-  const [form, setForm] = useState({
-    nama: "",
+  const [profile, setProfile] = useState({
+    name: "",
     email: "",
   });
 
   useEffect(() => {
-    fetchProfile();
+    loadProfile();
   }, []);
 
-  const fetchProfile = async () => {
+  const loadProfile = async () => {
     try {
       const res = await getProfile();
-
-      setForm({
-        nama: res.data.nama || "",
-        email: res.data.email || "",
-      });
-    } catch (error) {
-      console.log(error);
+      setProfile(res.data);
+    } catch (err) {
+      console.log(err);
     }
-  };
-
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await updateProfile(form);
-      alert("Profile berhasil diperbarui");
-    } catch (error) {
-      console.log(error);
+      await updateProfile(profile);
+      alert("Profile berhasil diupdate");
+    } catch (err) {
+      alert("Gagal update profile");
     }
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Profil Saya</h2>
+    <UserPrivateLayout>
+      <h1 className="text-3xl font-bold mb-6">Profile</h1>
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label>Nama</label>
-          <input
-            className="form-control"
-            name="nama"
-            value={form.nama}
-            onChange={handleChange}
-          />
-        </div>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-xl shadow"
+      >
+        <input
+          type="text"
+          className="w-full border p-3 rounded mb-4"
+          value={profile.name}
+          onChange={(e) =>
+            setProfile({
+              ...profile,
+              name: e.target.value,
+            })
+          }
+        />
 
-        <div className="mb-3">
-          <label>Email</label>
-          <input
-            className="form-control"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-          />
-        </div>
+        <input
+          type="email"
+          className="w-full border p-3 rounded mb-4"
+          value={profile.email}
+          onChange={(e) =>
+            setProfile({
+              ...profile,
+              email: e.target.value,
+            })
+          }
+        />
 
-        <button className="btn btn-success">
-          Simpan Perubahan
+        <button className="bg-green-600 text-white px-5 py-2 rounded">
+          Simpan
         </button>
       </form>
-    </div>
+    </UserPrivateLayout>
   );
 }

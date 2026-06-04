@@ -1,52 +1,47 @@
-import React, { useState } from "react";
-import * as authService from "../../../services/auth/authService";
+import { useState } from "react";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    try {
-      await authService.forgotPassword({
-        email,
-      });
-
-      alert(
-        "Link reset password berhasil dikirim"
-      );
-    } catch (error) {
-      console.log(error);
-      alert("Gagal kirim email");
-    }
+    alert(
+      "Fitur reset password belum tersedia"
+    );
   };
 
   return (
-    <div className="container mt-5">
-      <div
-        className="card p-4 mx-auto"
-        style={{ maxWidth: "420px" }}
-      >
-        <h2 className="mb-4 text-center">
-          Forgot Password
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-slate-100">
+
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+
+        <h1 className="text-3xl font-bold text-center mb-6">
+          Lupa Password
+        </h1>
 
         <form onSubmit={handleSubmit}>
+
           <input
             type="email"
-            className="form-control mb-3"
             placeholder="Masukkan email"
+            className="w-full border p-3 rounded-lg mb-4"
             value={email}
             onChange={(e) =>
               setEmail(e.target.value)
             }
           />
 
-          <button className="btn btn-warning w-100">
-            Kirim Reset Link
+          <button
+            className="w-full bg-green-600 text-white p-3 rounded-lg"
+          >
+            Kirim
           </button>
+
         </form>
+
       </div>
+
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "./layouts/AdminLayout";
 import Login from "./pages/Login";
+import Logout from "./pages/Logout";
 
 // ================= USER =================
 
@@ -61,6 +62,7 @@ function App() {
         {/* USER AUTH */}
         <Route path="/user/login" element={<LoginUser />} />
         <Route path="/user/register" element={<Register />} />
+        <Route path="/logout" element={<Logout />} />
         <Route path="/user/forgot-password" element={<ForgotPassword />} />
 
         {/* USER PRIVATE */}
