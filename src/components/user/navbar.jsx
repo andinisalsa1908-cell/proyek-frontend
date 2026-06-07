@@ -22,7 +22,7 @@ const Navbar = ({ onLogout }) => {
               <Link to="/pesan-tiket">Pesan Tiket</Link>
               <Link to="/tiket-saya">Tiket Saya</Link>
               <Link to="/profile">Profile</Link>
-              <Link to="/login"
+              <Link to="/logout"
                 className="bg-white text-green-700 px-4 py-2 rounded"
               >
                 Logout 
@@ -31,7 +31,7 @@ const Navbar = ({ onLogout }) => {
           ) : (
             <>
               <Link
-                to="/user/login"
+                to="/login"
                 className="bg-white text-green-700 px-4 py-2 rounded"
               >
                 Login
