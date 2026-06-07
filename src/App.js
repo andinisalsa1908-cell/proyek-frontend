@@ -1,14 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "./layouts/AdminLayout";
 import Login from "./pages/Login";
-import Logout from "./pages/Logout";
 
 // ================= USER =================
 
 // Auth
-import LoginUser from "./pages/user/auth/Login";
-import Register from "./pages/user/auth/Register";
-import ForgotPassword from "./pages/user/auth/ForgotPassword";
+import ForgotPassword from "./pages/ForgotPassword";
 
 // Public
 import Home from "./pages/user/public/Home";
@@ -60,10 +57,7 @@ function App() {
         <Route path="/artikel/:id" element={<DetailArtikel />} />
 
         {/* USER AUTH */}
-        <Route path="/user/login" element={<LoginUser />} />
-        <Route path="/user/register" element={<Register />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="/user/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* USER PRIVATE */}
         <Route
