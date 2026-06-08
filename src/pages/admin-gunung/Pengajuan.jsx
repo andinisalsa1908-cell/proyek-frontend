@@ -30,11 +30,11 @@ const Pengajuan = () => {
   }, []);
 
   // ================= GET BASECAMPS =================
-  const fetchBasecamp = async () => {
+const fetchBasecamp = async () => {
     try {
-
+      // 🌟 KUNCI PERBAIKAN: Gunakan process.env untuk menampung URL dinamis
       const res = await fetch(
-        "http://127.0.0.1:8000/api/admin-gunung/basecamps",
+        `${process.env.REACT_APP_API_URL}/admin-gunung/basecamps`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -43,9 +43,7 @@ const Pengajuan = () => {
       );
 
       const data = await res.json();
-
       console.log("BASECAMP RESPONSE:", data);
-
       setBasecamps(data?.data?.data || data?.data || []);
 
     } catch (err) {
