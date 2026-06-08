@@ -11,9 +11,9 @@ env:
 
 jobs:
 
-  # ─── JOB 1: TEST & BUILD REACT ───────────────────────────
+  # ─── JOB 1: TEST REACT ───────────────────────────────────
   test:
-    name: Test & Build React
+    name: Test React
     runs-on: ubuntu-latest
 
     steps:
@@ -28,13 +28,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Create .env
-        run: |
-          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env
-
-      - name: Build React App
-        run: |
-          CI=false npm run build
+      # Di sini kita hapus build manualnya karena build asli dilakukan di dalam Dockerfile
 
   # ─── JOB 2: BUILD & PUSH IMAGE ───────────────────────────
   build-and-push:
@@ -79,6 +73,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # 🌟 KUNCI PERBAIKAN: Kirim secret langsung sebagai argument Docker Build
+          build-args: |
+            REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
