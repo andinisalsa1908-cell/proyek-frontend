@@ -49,17 +49,17 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* USER PUBLIC }
+        {/* USER PUBLIC */}
         <Route path="/" element={<Home />} />
         <Route path="/gunung" element={<DaftarGunung />} />
         <Route path="/gunung/:id" element={<DetailGunung />} />
         <Route path="/artikel" element={<Artikel />} />
         <Route path="/artikel/:id" element={<DetailArtikel />} />
 
-        {/* USER AUTH }
+        {/* USER AUTH */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* USER PRIVATE }
+        {/* USER PRIVATE */}
         <Route
           path="/pesan-tiket"
           element={
@@ -103,7 +103,7 @@ function App() {
               <Profile />
             </ProtectedRoute>
           }
-        /> */}
+        />
 
         {/* ADMIN LOGIN */}
         <Route path="/login" element={<Login />} />
