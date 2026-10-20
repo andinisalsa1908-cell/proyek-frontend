@@ -1,32 +1,43 @@
-import { Link, NavLink } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 const Navbar = ({ onLogout }) => {
   const isLogin = localStorage.getItem("token");
+  const location = useLocation();
 
-  // Gaya menu: teks putih terang, zoom dikit, garis bawah saat aktif/hover
+  const isHomePage = location.pathname === "/";
+
   const getNavLinkClass = ({ isActive }) =>
     isActive
-      ? "text-white font-bold border-b-2 border-white pb-1 transform scale-105 transition-all"
-      : "text-slate-200 hover:text-white hover:scale-105 transition-all";
+      ? "text-white font-extrabold border-b-2 border-white pb-1 tracking-wide transition-all transform scale-105"
+      : "text-blue-100/80 hover:text-white hover:scale-105 transition-all";
 
   return (
-    <nav className="bg-[#2a4365] text-white shadow">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <nav
+      className={`text-white transition-all duration-300 relative z-20 ${
+        isHomePage ? "bg-transparent -mb-24 pt-4" : "bg-[#244275] shadow py-2"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center">
 
-        <Link to="/" className="text-2xl font-bold hover:text-slate-200 transition-colors">
-          SummitGO
+        {/* LOGO */}
+        <Link to="/" className="flex items-center">
+          <img 
+            src="/logo.png" 
+            alt="Logo SummitGo" 
+            className="h-16 md:h-20 w-auto object-contain transition-all" 
+            onError={(e) => { 
+              e.target.style.display = 'none'; 
+            }} 
+          />
         </Link>
 
-        <div className="flex gap-6 items-center">
+        {/* MENU NAVIGASI (Tanpa Artikel) */}
+        <div className="flex gap-6 items-center text-sm md:text-base font-medium">
           <NavLink to="/" className={getNavLinkClass}>
             Home
           </NavLink>
           <NavLink to="/gunung" className={getNavLinkClass}>
             Gunung
-          </NavLink>
-          <NavLink to="/artikel" className={getNavLinkClass}>
-            Artikel
           </NavLink>
 
           {isLogin ? (
@@ -40,18 +51,16 @@ const Navbar = ({ onLogout }) => {
               <NavLink to="/profile" className={getNavLinkClass}>
                 Profile
               </NavLink>
-              <Link
-                to="/logout"
-                className="bg-white text-[#2a4365] px-4 py-2 rounded font-medium hover:bg-slate-100 transition-all shadow-sm"
-              >
-                Logout 
+              
+              <Link to="/logout" className="text-blue-100/80 hover:text-white transition-all">
+                Logout
               </Link>
             </>
           ) : (
             <>
-              <Link
-                to="/login"
-                className="bg-white text-[#2a4365] px-4 py-2 rounded font-medium hover:bg-slate-100 transition-all shadow-sm"
+              <Link 
+                to="/login" 
+                className="bg-[#f3e03b] hover:bg-yellow-400 text-[#244275] font-extrabold px-5 py-2 rounded-full transition-all shadow-sm"
               >
                 Login
               </Link>
@@ -63,4 +72,5 @@ const Navbar = ({ onLogout }) => {
     </nav>
   );
 };
+
 export default Navbar;
