@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import UserLayout from "../../../layouts/UserLayout";
 
 export default function DetailGunung() {
   const { id } = useParams();
+  const [selectedJalur, setSelectedJalur] = useState("");
 
   // Data tiruan daftar gunung
   const dataGunung = {
@@ -88,22 +89,31 @@ export default function DetailGunung() {
                 </p>
               </div>
 
-              {/* JALUR PENDAKIAN */}
+              {/* JALUR PENDAKIAN (Bisa Diklik) */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-3">
                 <h2 className="text-lg font-bold text-[#244275] border-b border-slate-100 pb-2">
-                  Jalur Pendakian
+                  Jalur Pendakian <span className="text-xs font-normal text-slate-400">(Pilih salah satu sebelum memesan)</span>
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-1">
-                  {gunung.jalur.map((jalurItem, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-center shadow-2xs"
-                    >
-                      <span className="text-xs font-bold text-slate-700">
-                        {jalurItem}
-                      </span>
-                    </div>
-                  ))}
+                  {gunung.jalur.map((jalurItem, idx) => {
+                    const isSelected = selectedJalur === jalurItem;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setSelectedJalur(jalurItem)}
+                        className={`rounded-lg p-3 text-center border transition-all cursor-pointer ${
+                          isSelected
+                            ? "bg-[#244275] text-white border-[#244275] shadow-md font-bold"
+                            : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                        }`}
+                      >
+                        <span className="text-xs">
+                          {jalurItem} {isSelected && " ✓"}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -130,15 +140,38 @@ export default function DetailGunung() {
                     <span>Status Jalur:</span>
                     <strong className="text-[#244275]">{gunung.statusJalur}</strong>
                   </div>
+                  {selectedJalur && (
+                    <div className="flex justify-between pt-1 border-t border-slate-100">
+                      <span>Jalur Dipilih:</span>
+                      <strong className="text-green-600">{selectedJalur}</strong>
+                    </div>
+                  )}
                 </div>
 
-                {/* Tombol Pesan Tiket */}
-                <Link
-                  to="/user/login"
-                  className="w-full block text-center bg-[#244275] hover:bg-[#1a325a] text-white text-xs font-bold py-3 px-4 rounded-lg shadow-sm transition-all"
-                >
-                  Pesan Tiket
-                </Link>
+                {/* Tombol Pesan Tiket dengan Validasi Jalur */}
+                <div className="space-y-2">
+                  {selectedJalur ? (
+                    <Link
+                      to={`/pesan-tiket?gunung_id=${id}&jalur=${encodeURIComponent(selectedJalur)}`}
+                      className="w-full block text-center bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-3 px-4 rounded-lg shadow-sm transition-all"
+                    >
+                      Pesan Tiket
+                    </Link>
+                  ) : (
+                    <>
+                      <button
+                        disabled
+                        className="w-full block text-center bg-slate-200 text-slate-400 text-xs font-bold py-3 px-4 rounded-lg cursor-not-allowed shadow-none"
+                      >
+                        Pesan Tiket
+                      </button>
+                      <p className="text-[11px] text-rose-500 text-center italic mt-1">
+                        *pilih jalur terlebih dahulu untuk melanjutkan pesan tiket
+                      </p>
+                    </>
+                  )}
+                </div>
+
               </div>
             </div>
 
