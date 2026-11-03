@@ -35,6 +35,20 @@ export const getGunungs = () =>
   API.get("/super-admin/gunungs");
 
 
+// 🔹 PROMO
+export const getPromos = () =>
+  API.get("/super-admin/promos");
+
+export const createPromo = (data) =>
+  API.post("/super-admin/promos", data);
+
+export const updatePromo = (id, data) =>
+  API.put(`/super-admin/promos/${id}`, data);
+
+export const deletePromo = (id) =>
+  API.delete(`/super-admin/promos/${id}`);
+
+
 // 🔹 ACTIVITY LOG
 export const getActivityLogs = () =>
   API.get("/super-admin/activity-logs");

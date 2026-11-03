@@ -9,7 +9,8 @@ import {
   Settings, 
   FileText, 
   CheckSquare,
-  ActivityIcon
+  ActivityIcon,
+  BadgePercent
 } from 'lucide-react';
 import { ImBasecamp } from 'react-icons/im';
 
@@ -22,6 +23,7 @@ const Sidebar = ({ role, onLogout }) => {
           { name: 'Dashboard', path: '/super-admin', icon: <LayoutDashboard /> },
           { name: 'Kelola Akun', path: '/super-admin/kelola-akun', icon: <Users /> },
           { name: 'Gunung', path: '/super-admin/gunung', icon: <Mountain /> },
+          { name: 'Promo', path: '/super-admin/promo', icon: <BadgePercent /> },
           { name: 'Permintaan', path: '/super-admin/permintaan', icon: <ClipboardList /> },
           { name: 'Activity', path: '/super-admin/activity', icon: <ActivityIcon />},
         ];

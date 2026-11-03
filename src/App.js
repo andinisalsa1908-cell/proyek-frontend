@@ -28,6 +28,7 @@ import ProtectedRoute from "./services/auth/protectedRoute";
 import SuperAdminDash from "./pages/super-admin/Dashboard";
 import KelolaAkun from "./pages/super-admin/KelolaAkun";
 import Gunung from "./pages/super-admin/Gunung";
+import Promo from "./pages/super-admin/Promo";
 import Permintaan from "./pages/super-admin/Permintaan";
 import Activity from "./pages/super-admin/ActivityLog";
 
@@ -112,6 +113,7 @@ function App() {
         <Route path="/super-admin" element={<AdminLayout role="super-admin"><SuperAdminDash /></AdminLayout>} />
         <Route path="/super-admin/kelola-akun" element={<AdminLayout role="super-admin"><KelolaAkun /></AdminLayout>} />
         <Route path="/super-admin/gunung" element={<AdminLayout role="super-admin"><Gunung /></AdminLayout>} />
+        <Route path="/super-admin/promo" element={<AdminLayout role="super-admin"><Promo /></AdminLayout>} />
         <Route path="/super-admin/permintaan" element={<AdminLayout role="super-admin"><Permintaan /></AdminLayout>} />
         <Route path="/super-admin/activity" element={<AdminLayout role="super-admin"><Activity /></AdminLayout>} />
 
