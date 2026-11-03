@@ -10,7 +10,8 @@ import {
   FileText, 
   CheckSquare,
   ActivityIcon,
-  BadgePercent
+  BadgePercent,
+  Package
 } from 'lucide-react';
 import { ImBasecamp } from 'react-icons/im';
 
@@ -39,6 +40,7 @@ const Sidebar = ({ role, onLogout }) => {
         return [
           { name: 'Dashboard', path: '/admin-basecamp', icon: <LayoutDashboard /> },
           { name: 'Kelola Pendaki', path: '/admin-basecamp/pendaki', icon: <Users /> },
+          { name: 'Kelola Peralatan', path: '/admin-basecamp/peralatan', icon: <Package /> },
           { name: 'Validasi Tiket', path: '/admin-basecamp/validasi', icon: <CheckSquare /> },
           { name: 'Laporan', path: '/admin-basecamp/laporan', icon: <FileText /> },
           { name: 'Pengaturan Kuota', path: '/admin-basecamp/kuota', icon: <Settings /> },

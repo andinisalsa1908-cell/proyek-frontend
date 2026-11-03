@@ -56,6 +56,31 @@ export const deleteJalur = (basecampId, id) =>
   API.delete(`/admin-basecamp/basecamps/${basecampId}/jalurs/${id}`);
 
 
+// 🔹 PERALATAN
+export const getPeralatans = (basecampId) =>
+  API.get(`/admin-basecamp/basecamps/${basecampId}/peralatans`);
+
+export const getPeralatanDetail = (basecampId, id) =>
+  API.get(`/admin-basecamp/basecamps/${basecampId}/peralatans/${id}`);
+
+export const createPeralatan = (basecampId, data) =>
+  API.post(`/admin-basecamp/basecamps/${basecampId}/peralatans`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }
+  });
+
+export const updatePeralatan = (basecampId, id, data) =>
+  API.post(`/admin-basecamp/basecamps/${basecampId}/peralatans/${id}`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }
+  });
+
+export const deletePeralatan = (basecampId, id) =>
+  API.delete(`/admin-basecamp/basecamps/${basecampId}/peralatans/${id}`);
+
+
 // 🔹 DASHBOARD
 export const getDashboard = () =>
   API.get("/admin-basecamp/dashboard");

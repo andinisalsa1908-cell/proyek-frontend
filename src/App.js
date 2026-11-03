@@ -35,6 +35,7 @@ import Activity from "./pages/super-admin/ActivityLog";
 // ================= ADMIN BASECAMP =================
 import AdminBasecampDash from "./pages/admin-basecamp/Dashboard";
 import KelolaPendaki from "./pages/admin-basecamp/KelolaPendaki";
+import KelolaPeralatan from "./pages/admin-basecamp/KelolaPeralatan";
 import ValidasiTiket from "./pages/admin-basecamp/ValidasiTiket";
 import LaporanPendaki from "./pages/admin-basecamp/LaporanPendaki";
 import PengaturanKuotaJalur from "./pages/admin-basecamp/PengaturanKuotaJalur";
@@ -120,6 +121,7 @@ function App() {
         {/* ADMIN BASECAMP */}
         <Route path="/admin-basecamp" element={<AdminLayout role="admin-basecamp"><AdminBasecampDash /></AdminLayout>} />
         <Route path="/admin-basecamp/pendaki" element={<AdminLayout role="admin-basecamp"><KelolaPendaki /></AdminLayout>} />
+        <Route path="/admin-basecamp/peralatan" element={<AdminLayout role="admin-basecamp"><KelolaPeralatan /></AdminLayout>} />
         <Route path="/admin-basecamp/validasi" element={<AdminLayout role="admin-basecamp"><ValidasiTiket /></AdminLayout>} />
         <Route path="/admin-basecamp/laporan" element={<AdminLayout role="admin-basecamp"><LaporanPendaki /></AdminLayout>} />
         <Route path="/admin-basecamp/kuota" element={<AdminLayout role="admin-basecamp"><PengaturanKuotaJalur /></AdminLayout>} />
