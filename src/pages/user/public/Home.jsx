@@ -91,7 +91,7 @@ export default function Home() {
           </h1>
 
           <p className="text-blue-100 text-sm md:text-lg max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
-            SummitGo adalah platform pemesanan tiket pendakian gunung secara online terintegrasi untuk mempermudah pengalaman pendakianmu di seluruh Indonesia.
+            SummitGo adalah platform pemesanan tiket pendakian gunung dan penyewaan perlengkapan outdoor secara online yang terintegrasi untuk mempermudah pengalaman petualanganmu di seluruh Indonesia.
           </p>
 
           <Link
@@ -236,7 +236,25 @@ export default function Home() {
             </div>
           </section>
 
-          {/* CARA PEMESANAN TIKET (DIBUAT PROFESSIONAL, CLEAN, & ELEGANT) */}
+          {/* PROMO / INFORMASI SEWA PERALATAN */}
+          <section className="bg-gradient-to-r from-[#244275] to-[#1a325a] text-white rounded-2xl p-8 md:p-10 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="text-center md:text-left">
+              <h2 className="text-2xl md:text-3xl font-extrabold mb-2">
+                Butuh Perlengkapan Pendakian?
+              </h2>
+              <p className="text-blue-100 text-xs md:text-sm max-w-xl leading-relaxed">
+                Tidak perlu repot membawa beban berat dari rumah. Nikmati kemudahan sewa Tenda, Sleeping Bag, Carrier, dan alat outdoor berkualitas langsung secara praktis.
+              </p>
+            </div>
+            <Link
+              to="/sewa-alat"
+              className="bg-[#f3e03b] hover:bg-yellow-400 text-[#244275] font-extrabold text-sm px-8 py-3.5 rounded-full transition-all duration-300 shadow-md whitespace-nowrap transform hover:-translate-y-0.5"
+            >
+              Lihat Katalog Alat →
+            </Link>
+          </section>
+
+          {/* CARA PEMESANAN TIKET */}
           <section className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
             <h2 className="text-2xl font-extrabold text-center text-[#244275] mb-2">
               Cara Pemesanan Tiket

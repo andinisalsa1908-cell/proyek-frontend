@@ -17,6 +17,7 @@ import DetailGunung from "./pages/user/public/DetailGunung";
 // Private
 import PesanTiket from "./pages/user/private/PesanTiket";
 import TiketSaya from "./pages/user/private/TiketSaya";
+import SewaPeralatan from "./pages/user/private/SewaPeralatan";
 import PengajuanGunung from "./pages/user/private/PengajuanGunung";
 import RiwayatPengajuan from "./pages/user/private/RiwayatPengajuan";
 import Profile from "./pages/user/private/Profile";
@@ -76,6 +77,15 @@ function App() {
           element={
             <ProtectedRoute>
               <TiketSaya />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/sewa-alat"
+          element={
+            <ProtectedRoute>
+              <SewaPeralatan />
             </ProtectedRoute>
           }
         />
