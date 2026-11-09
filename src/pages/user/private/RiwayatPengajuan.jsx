@@ -12,7 +12,7 @@ export default function RiwayatPengajuan() {
   const loadPengajuan = async () => {
     try {
       const res = await getPengajuan();
-      setPengajuan(res.data);
+      setPengajuan(res.data?.data?.data || res.data?.data || res.data || []);
     } catch (err) {
       console.log(err);
     }

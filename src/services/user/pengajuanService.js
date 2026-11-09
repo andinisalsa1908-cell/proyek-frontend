@@ -4,9 +4,6 @@ export const createPengajuan = (data) => {
   return API.post("/user/requests", data);
 };
 
-// sementara dummy dulu
-export const getPengajuan = async () => {
-  return {
-    data: [],
-  };
+export const getPengajuan = () => {
+  return API.get("/user/requests");
 };

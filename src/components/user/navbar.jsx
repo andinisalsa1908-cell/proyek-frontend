@@ -48,6 +48,9 @@ const Navbar = ({ onLogout }) => {
               <NavLink to="/tiket-saya" className={getNavLinkClass}>
                 Tiket Saya
               </NavLink>
+              <NavLink to="/riwayat" className={getNavLinkClass}>
+                Riwayat
+              </NavLink>
               <NavLink to="/profile" className={getNavLinkClass}>
                 Profile
               </NavLink>

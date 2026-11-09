@@ -19,6 +19,7 @@ import PesanTiket from "./pages/user/private/PesanTiket";
 import TiketSaya from "./pages/user/private/TiketSaya";
 import PengajuanGunung from "./pages/user/private/PengajuanGunung";
 import RiwayatPengajuan from "./pages/user/private/RiwayatPengajuan";
+import Riwayat from "./pages/user/private/Riwayat";
 import Profile from "./pages/user/private/Profile";
 
 /* INI YANG DIGANTI */
@@ -94,6 +95,15 @@ function App() {
           element={
             <ProtectedRoute>
               <RiwayatPengajuan />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/riwayat"
+          element={
+            <ProtectedRoute>
+              <Riwayat />
             </ProtectedRoute>
           }
         />
