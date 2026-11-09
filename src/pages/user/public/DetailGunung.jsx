@@ -6,13 +6,17 @@ export default function DetailGunung() {
   const { id } = useParams();
   const [selectedJalur, setSelectedJalur] = useState("");
 
-  // Data tiruan daftar gunung
+  // Data tiruan daftar gunung (jalur diubah menjadi objek agar memiliki foto kondisi jalur)
   const dataGunung = {
     1: {
       nama: "Gunung Ciremai",
       lokasi: "Jawa Barat",
       deskripsi: "Gunung Ciremai merupakan gunung tertinggi di Jawa Barat dengan panorama alam yang indah. Menawarkan jalur pendakian yang menantang serta pemandangan alam yang memesona bagi para pendaki.",
-      jalur: ["Apuy", "Linggarjati", "Palutungan"],
+      jalur: [
+        { nama: "Apuy", foto: "https://images.unsplash.com/photo-1519681393784-d120267933ba" },
+        { nama: "Linggarjati", foto: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b" },
+        { nama: "Palutungan", foto: "https://images.unsplash.com/photo-1506744038136-46273834b3fb" }
+      ],
       statusKuota: "Tersedia",
       statusJalur: "Buka",
       image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b"
@@ -21,7 +25,12 @@ export default function DetailGunung() {
       nama: "Gunung Merbabu",
       lokasi: "Jawa Tengah",
       deskripsi: "Gunung Merbabu adalah gunung api stratovolcano yang terletak di Provinsi Jawa Tengah. Terkenal dengan keindahan sabana luas dan pemandangan sunrise terbaik di antara gunung-gunung Jawa.",
-      jalur: ["Selo", "Wekas", "Cuntel", "Thekelan"],
+      jalur: [
+        { nama: "Selo", foto: "https://images.unsplash.com/photo-1506744038136-46273834b3fb" },
+        { nama: "Wekas", foto: "https://images.unsplash.com/photo-1519681393784-d120267933ba" },
+        { nama: "Cuntel", foto: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b" },
+        { nama: "Thekelan", foto: "https://images.unsplash.com/photo-1426604966848-d7adac902bff" }
+      ],
       statusKuota: "Tersedia",
       statusJalur: "Buka",
       image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb"
@@ -30,7 +39,9 @@ export default function DetailGunung() {
       nama: "Gunung Semeru",
       lokasi: "Jawa Timur",
       deskripsi: "Gunung Semeru atau Mahameru adalah gunung tertinggi di Pulau Jawa, dengan puncaknya Mahameru (3.676 mdpl). Menyajikan pengalaman pendakian legendaris melalui Ranu Kumbolo.",
-      jalur: ["Tawargo / Ranu Pane"],
+      jalur: [
+        { nama: "Tawargo / Ranu Pane", foto: "https://images.unsplash.com/photo-1519681393784-d120267933ba" }
+      ],
       statusKuota: "Terbatas",
       statusJalur: "Buka Sebagian",
       image: "https://images.unsplash.com/photo-1519681393784-d120267933ba"
@@ -39,7 +50,12 @@ export default function DetailGunung() {
       nama: "Gunung Slamet",
       lokasi: "Jawa Tengah",
       deskripsi: "Gunung Slamet adalah gunung berapi kerucut yang terletak di antara lima kabupaten di Jawa Tengah. Merupakan gunung tertinggi di Jawa Tengah dengan trek pendakian yang dikenal cukup menantang.",
-      jalur: ["Bambangan", "Guci", "Permadi", "Baturaden"],
+      jalur: [
+        { nama: "Bambangan", foto: "https://images.unsplash.com/photo-1426604966848-d7adac902bff" },
+        { nama: "Guci", foto: "https://images.unsplash.com/photo-1506744038136-46273834b3fb" },
+        { nama: "Permadi", foto: "https://images.unsplash.com/photo-1519681393784-d120267933ba" },
+        { nama: "Baturaden", foto: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b" }
+      ],
       statusKuota: "Tersedia",
       statusJalur: "Buka",
       image: "https://images.unsplash.com/photo-1426604966848-d7adac902bff"
@@ -89,29 +105,42 @@ export default function DetailGunung() {
                 </p>
               </div>
 
-              {/* JALUR PENDAKIAN (Bisa Diklik) */}
+              {/* JALUR PENDAKIAN (Dengan Foto Kondisi Jalur) */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-3">
                 <h2 className="text-lg font-bold text-[#244275] border-b border-slate-100 pb-2">
                   Jalur Pendakian <span className="text-xs font-normal text-slate-400">(Pilih salah satu sebelum memesan)</span>
                 </h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-1">
-                  {gunung.jalur.map((jalurItem, idx) => {
-                    const isSelected = selectedJalur === jalurItem;
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-1">
+                  {gunung.jalur.map((jalurObj, idx) => {
+                    const isSelected = selectedJalur === jalurObj.nama;
                     return (
-                      <button
+                      <div
                         key={idx}
-                        type="button"
-                        onClick={() => setSelectedJalur(jalurItem)}
-                        className={`rounded-lg p-3 text-center border transition-all cursor-pointer ${
+                        onClick={() => setSelectedJalur(jalurObj.nama)}
+                        className={`rounded-xl overflow-hidden border transition-all cursor-pointer flex flex-col ${
                           isSelected
-                            ? "bg-[#244275] text-white border-[#244275] shadow-md font-bold"
-                            : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                            ? "border-[#244275] ring-2 ring-[#244275] shadow-md bg-blue-50/30"
+                            : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
                         }`}
                       >
-                        <span className="text-xs">
-                          {jalurItem} {isSelected && " ✓"}
-                        </span>
-                      </button>
+                        <div className="h-28 w-full overflow-hidden relative">
+                          <img
+                            src={jalurObj.foto}
+                            alt={jalurObj.nama}
+                            className="w-full h-full object-cover"
+                          />
+                          {isSelected && (
+                            <div className="absolute top-2 right-2 bg-[#244275] text-white text-xs px-2 py-0.5 rounded-full font-bold shadow">
+                              Dipilih ✓
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-3 text-center flex-1 flex items-center justify-center">
+                          <span className={`text-xs font-semibold ${isSelected ? "text-[#244275] font-bold" : "text-slate-700"}`}>
+                            Jalur {jalurObj.nama}
+                          </span>
+                        </div>
+                      </div>
                     );
                   })}
                 </div>
