@@ -21,6 +21,7 @@ import SewaPeralatan from "./pages/user/private/SewaPeralatan";
 import PengajuanGunung from "./pages/user/private/PengajuanGunung";
 import RiwayatPengajuan from "./pages/user/private/RiwayatPengajuan";
 import Riwayat from "./pages/user/private/Riwayat";
+import DaftarAdminGunung from "./pages/user/private/DaftarAdminGunung";
 import Profile from "./pages/user/private/Profile";
 
 /* INI YANG DIGANTI */
@@ -114,6 +115,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Riwayat />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/daftar-admin-gunung"
+          element={
+            <ProtectedRoute>
+              <DaftarAdminGunung />
             </ProtectedRoute>
           }
         />
