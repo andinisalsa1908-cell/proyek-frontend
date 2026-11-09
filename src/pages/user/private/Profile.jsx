@@ -13,12 +13,15 @@ import {
   ArrowLeft,
   Mountain,
   Ticket,
-  Backpack,
-  Compass,
   Calendar,
   CheckCircle2,
   Camera,
-  Check
+  Check,
+  ShoppingBag,
+  Compass,
+  Tag,
+  Target,
+  ListChecks
 } from "lucide-react";
 
 export default function Profile() {
@@ -272,20 +275,68 @@ export default function Profile() {
             <div className="space-y-7 text-slate-600 leading-relaxed">
               <div>
                 <p className="text-lg font-semibold text-[#244275] mb-2">Selamat Datang di SummitGo!</p>
+                <p className="mb-3">
+                  <strong>SummitGo</strong> merupakan platform digital yang dikembangkan untuk mempermudah pengguna dalam mengakses informasi dan layanan pendakian gunung. Melalui SummitGo, pengguna dapat mencari informasi gunung, melihat jalur pendakian, memeriksa kuota dan jadwal, melakukan pemesanan tiket, serta menyewa perlengkapan pendakian dalam satu platform.
+                </p>
                 <p>
-                  <strong>SummitGo</strong> merupakan platform digital yang dirancang untuk memudahkan masyarakat dalam mencari informasi dan melakukan pemesanan layanan pendakian gunung. Melalui satu platform, pengguna dapat merencanakan kegiatan pendakian dengan lebih praktis dan terorganisir.
+                  SummitGo hadir sebagai solusi digital untuk membantu pendaki dalam merencanakan kegiatan pendakian agar lebih mudah, praktis, dan terorganisir.
                 </p>
               </div>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="bg-blue-50 rounded-xl p-5">
-                  <Mountain className="w-7 h-7 text-[#244275] mb-3" />
-                  <h3 className="font-bold text-slate-800 mb-1">Informasi Gunung</h3>
-                  <p className="text-sm">Temukan informasi gunung, jalur pendakian, kuota, dan jadwal pendakian yang tersedia.</p>
+
+              {/* FITUR UTAMA */}
+              <div>
+                <h3 className="text-base font-bold text-slate-800 mb-3 border-b border-slate-100 pb-2">Fitur Utama SummitGo</h3>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="bg-blue-50/70 rounded-xl p-4 border border-blue-100">
+                    <Mountain className="w-6 h-6 text-[#244275] mb-2" />
+                    <h4 className="font-bold text-slate-800 text-sm mb-1">1. Informasi Gunung</h4>
+                    <p className="text-xs text-slate-600">Menyediakan informasi mengenai gunung, jalur pendakian, kuota, dan jadwal pendakian yang tersedia.</p>
+                  </div>
+                  <div className="bg-blue-50/70 rounded-xl p-4 border border-blue-100">
+                    <Ticket className="w-6 h-6 text-[#244275] mb-2" />
+                    <h4 className="font-bold text-slate-800 text-sm mb-1">2. Pemesanan Tiket Pendakian</h4>
+                    <p className="text-xs text-slate-600">Memudahkan pengguna melakukan pemesanan tiket berdasarkan gunung, jalur, dan tanggal pendakian yang dipilih.</p>
+                  </div>
+                  <div className="bg-blue-50/70 rounded-xl p-4 border border-blue-100">
+                    <ShoppingBag className="w-6 h-6 text-[#244275] mb-2" />
+                    <h4 className="font-bold text-slate-800 text-sm mb-1">3. Penyewaan Peralatan</h4>
+                    <p className="text-xs text-slate-600">Menyediakan informasi perlengkapan pendakian beserta ketersediaan stok yang dapat disewa oleh pengguna.</p>
+                  </div>
+                  <div className="bg-blue-50/70 rounded-xl p-4 border border-blue-100">
+                    <Compass className="w-6 h-6 text-[#244275] mb-2" />
+                    <h4 className="font-bold text-slate-800 text-sm mb-1">4. Rekomendasi Gunung</h4>
+                    <p className="text-xs text-slate-600">Membantu pengguna menemukan pilihan gunung berdasarkan profil dan preferensi yang dimiliki.</p>
+                  </div>
+                  <div className="bg-blue-50/70 rounded-xl p-4 sm:col-span-2 border border-blue-100">
+                    <Tag className="w-6 h-6 text-[#244275] mb-2" />
+                    <h4 className="font-bold text-slate-800 text-sm mb-1">5. Informasi Promo</h4>
+                    <p className="text-xs text-slate-600">Menampilkan informasi promo yang tersedia untuk diketahui oleh pengguna.</p>
+                  </div>
                 </div>
-                <div className="bg-blue-50 rounded-xl p-5">
-                  <Ticket className="w-7 h-7 text-[#244275] mb-3" />
-                  <h3 className="font-bold text-slate-800 mb-1">Pemesanan Tiket</h3>
-                  <p className="text-sm">Lakukan pemesanan tiket pendakian secara online sesuai pilihan gunung, jalur, dan tanggal.</p>
+              </div>
+
+              {/* VISI & MISI */}
+              <div className="space-y-4 pt-2">
+                <div className="bg-slate-50 rounded-xl p-5 border border-slate-200/80">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="w-5 h-5 text-[#244275]" />
+                    <h3 className="font-bold text-slate-800">Visi</h3>
+                  </div>
+                  <p className="text-sm text-slate-600">Menjadi platform digital yang mempermudah akses informasi dan layanan pendakian gunung melalui sistem yang terintegrasi.</p>
+                </div>
+
+                <div className="bg-slate-50 rounded-xl p-5 border border-slate-200/80">
+                  <div className="flex items-center gap-2 mb-2">
+                    <ListChecks className="w-5 h-5 text-[#244275]" />
+                    <h3 className="font-bold text-slate-800">Misi</h3>
+                  </div>
+                  <ul className="list-disc pl-5 space-y-1.5 text-sm text-slate-600">
+                    <li>Mempermudah pengguna memperoleh informasi pendakian gunung.</li>
+                    <li>Menyediakan layanan pemesanan tiket pendakian secara digital.</li>
+                    <li>Mempermudah proses penyewaan perlengkapan pendakian.</li>
+                    <li>Memberikan rekomendasi gunung sesuai profil dan preferensi pengguna.</li>
+                    <li>Mendukung pengelolaan layanan pendakian secara lebih terorganisir.</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -300,13 +351,70 @@ export default function Profile() {
           icon: <ShieldCheck className="w-8 h-8 text-[#244275]" />,
           content: (
             <div className="space-y-6 text-slate-600 leading-relaxed">
-              <p>Selamat datang di <strong>SummitGo</strong>. Syarat dan Ketentuan ini mengatur penggunaan platform serta layanan yang tersedia di dalamnya.</p>
-              <section>
-                <h3 className="font-bold text-slate-800 mb-2">1. Ketentuan Akun Pengguna</h3>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>Pengguna wajib melakukan pendaftaran sebelum menggunakan layanan yang memerlukan akun.</li>
-                  <li>Pengguna harus memberikan informasi yang benar dan sesuai dengan identitasnya.</li>
+              <p>
+                Selamat datang di <strong>SummitGo</strong>. Syarat dan Ketentuan ini dibuat sebagai pedoman bagi seluruh pengguna dalam menggunakan layanan yang tersedia pada platform SummitGo. Dengan melakukan pendaftaran, mengakses, atau menggunakan layanan SummitGo, pengguna dianggap telah membaca dan memahami ketentuan berikut.
+              </p>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">1. Ketentuan Akun Pengguna</h3>
+                <ul className="list-disc pl-5 space-y-1 text-sm">
+                  <li>Pengguna wajib melakukan pendaftaran untuk menggunakan layanan yang membutuhkan akun.</li>
+                  <li>Pengguna harus memberikan informasi pribadi yang benar dan sesuai.</li>
+                  <li>Pengguna bertanggung jawab menjaga kerahasiaan akun dan kata sandi.</li>
+                  <li>Pengguna bertanggung jawab atas aktivitas yang dilakukan melalui akun miliknya.</li>
                 </ul>
+              </section>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">2. Ketentuan Pemesanan Tiket Pendakian</h3>
+                <ul className="list-disc pl-5 space-y-1 text-sm">
+                  <li>Pengguna dapat memilih gunung, jalur, tanggal, dan jadwal pendakian yang tersedia.</li>
+                  <li>Pemesanan tiket mengikuti kuota yang telah ditentukan oleh pengelola gunung.</li>
+                  <li>Pengguna wajib memastikan data pemesanan sudah benar sebelum melakukan pemesanan.</li>
+                  <li>Pengguna dapat melakukan pembatalan tiket sesuai ketentuan sistem.</li>
+                  <li>Tiket yang telah digunakan tidak dapat dibatalkan.</li>
+                  <li>Pengguna wajib mengikuti peraturan pendakian yang berlaku di gunung yang dipilih.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">3. Ketentuan Penyewaan Peralatan</h3>
+                <ul className="list-disc pl-5 space-y-1 text-sm">
+                  <li>Pengguna dapat melihat daftar peralatan pendakian yang tersedia untuk disewa.</li>
+                  <li>Penyewaan bergantung pada ketersediaan stok peralatan.</li>
+                  <li>Pengguna bertanggung jawab menjaga kondisi peralatan yang disewa.</li>
+                  <li>Pengguna dapat membatalkan pesanan selama pesanan belum diproses.</li>
+                  <li>Pesanan penyewaan yang telah diproses tidak dapat dibatalkan.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">4. Ketentuan Promo</h3>
+                <ul className="list-disc pl-5 space-y-1 text-sm">
+                  <li>Pengguna dapat melihat informasi promo yang tersedia pada SummitGo.</li>
+                  <li>Penggunaan promo mengikuti ketentuan yang tercantum pada informasi promo.</li>
+                  <li>Informasi promo dapat berubah sesuai pembaruan dari pengelola.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">5. Ketentuan Penggunaan Platform</h3>
+                <ul className="list-disc pl-5 space-y-1 text-sm">
+                  <li>Pengguna wajib menggunakan SummitGo sesuai dengan fungsi dan layanan yang tersedia.</li>
+                  <li>Pengguna dilarang memberikan informasi palsu atau melakukan penyalahgunaan sistem.</li>
+                  <li>Pengguna tidak diperkenankan menggunakan platform untuk kegiatan yang melanggar hukum.</li>
+                  <li>Pengguna wajib mengikuti ketentuan yang berlaku pada setiap layanan pendakian.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">6. Perubahan Syarat dan Ketentuan</h3>
+                <p className="text-sm">
+                  SummitGo dapat melakukan perubahan terhadap Syarat dan Ketentuan apabila terdapat pembaruan fitur, layanan, atau kebutuhan pengelolaan sistem. Pengguna disarankan untuk membaca halaman ini secara berkala.
+                </p>
+                <p className="text-sm italic font-medium text-slate-700">
+                  Dengan menggunakan layanan SummitGo, pengguna dianggap telah memahami dan menyetujui Syarat dan Ketentuan yang berlaku.
+                </p>
               </section>
             </div>
           ),
@@ -320,14 +428,78 @@ export default function Profile() {
           icon: <FileLock className="w-8 h-8 text-[#244275]" />,
           content: (
             <div className="space-y-6 text-slate-600 leading-relaxed">
-              <p><strong>SummitGo</strong> menghargai privasi pengguna. Kebijakan Privasi ini menjelaskan jenis informasi yang dikumpulkan.</p>
-              <section>
-                <h3 className="font-bold text-slate-800 mb-2">1. Informasi yang Dikumpulkan</h3>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>Nama lengkap, alamat email, dan nomor telepon.</li>
-                  <li>Informasi pemesanan tiket dan penyewaan peralatan.</li>
+              <p>
+                <strong>SummitGo</strong> menghargai privasi dan keamanan informasi setiap pengguna. Kebijakan Privasi ini menjelaskan bagaimana informasi pengguna dikumpulkan, digunakan, dan dilindungi selama menggunakan layanan SummitGo.
+              </p>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">1. Informasi yang Dikumpulkan</h3>
+                <p className="text-sm">Untuk mendukung penggunaan layanan, SummitGo dapat mengelola informasi yang diberikan pengguna, meliputi:</p>
+                <ul className="list-disc pl-5 space-y-1 text-sm">
+                  <li>Nama lengkap</li>
+                  <li>Alamat email</li>
+                  <li>Nomor telepon</li>
+                  <li>Alamat tempat tinggal</li>
+                  <li>Tanggal lahir</li>
+                  <li>Jenis kelamin</li>
+                  <li>Informasi pemesanan tiket pendakian</li>
+                  <li>Informasi penyewaan peralatan pendakian</li>
                 </ul>
               </section>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">2. Penggunaan Informasi</h3>
+                <p className="text-sm">Informasi yang diberikan pengguna digunakan untuk mendukung operasional layanan SummitGo, antara lain:</p>
+                <ul className="list-disc pl-5 space-y-1 text-sm">
+                  <li>Membuat dan mengelola akun pengguna.</li>
+                  <li>Mendukung proses pemesanan tiket pendakian.</li>
+                  <li>Mengelola informasi penyewaan peralatan.</li>
+                  <li>Menyimpan informasi dan riwayat pemesanan.</li>
+                  <li>Memberikan rekomendasi gunung berdasarkan profil dan preferensi pengguna.</li>
+                  <li>Membantu pengelola dalam mengelola data layanan pendakian.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">3. Perlindungan Data Pengguna</h3>
+                <p className="text-sm">
+                  SummitGo berupaya menjaga keamanan informasi pengguna dengan menerapkan perlindungan terhadap data akun dan transaksi, termasuk pengamanan kata sandi untuk mengurangi risiko akses yang tidak berwenang.
+                </p>
+              </section>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">4. Pengelolaan dan Akses Informasi</h3>
+                <p className="text-sm">Pengelolaan informasi dilakukan berdasarkan hak akses dan tanggung jawab masing-masing pengguna sistem:</p>
+                <ul className="list-disc pl-5 space-y-1 text-sm">
+                  <li><strong>Pengguna:</strong> dapat menggunakan informasi akun untuk kebutuhan layanan pribadi.</li>
+                  <li><strong>Admin Gunung:</strong> bertanggung jawab mengelola informasi gunung, jalur, kuota, dan layanan pendakian.</li>
+                  <li><strong>Admin Basecamp:</strong> bertanggung jawab mengelola data pendaki, peralatan, stok, dan penyewaan.</li>
+                  <li><strong>Super Admin:</strong> bertanggung jawab mengelola pengguna dan pengaturan sistem sesuai kewenangannya.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">5. Tanggung Jawab Pengguna</h3>
+                <p className="text-sm">Pengguna diharapkan untuk:</p>
+                <ul className="list-disc pl-5 space-y-1 text-sm">
+                  <li>Memberikan informasi yang benar saat melakukan pendaftaran.</li>
+                  <li>Menjaga kerahasiaan akun dan kata sandi.</li>
+                  <li>Tidak membagikan informasi login kepada orang lain.</li>
+                  <li>Menggunakan layanan SummitGo secara bertanggung jawab.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-2">
+                <h3 className="font-bold text-slate-800">6. Perubahan Kebijakan Privasi</h3>
+                <p className="text-sm">
+                  Kebijakan Privasi dapat diperbarui apabila terdapat perubahan pada fitur atau pengelolaan data SummitGo. Setiap perubahan akan ditampilkan pada halaman Kebijakan Privasi agar dapat diketahui oleh pengguna.
+                </p>
+              </section>
+
+              <div className="p-4 bg-blue-50/60 rounded-xl border border-blue-100 text-center mt-4">
+                <p className="text-xs font-semibold text-[#244275]">Komitmen SummitGo</p>
+                <p className="text-xs text-slate-600 mt-0.5">Kami berupaya menjaga informasi pengguna dan menyediakan layanan pendakian digital yang aman, nyaman, dan mudah digunakan.</p>
+              </div>
             </div>
           ),
         };
