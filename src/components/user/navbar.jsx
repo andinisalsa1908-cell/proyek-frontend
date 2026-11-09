@@ -31,7 +31,7 @@ const Navbar = ({ onLogout }) => {
           />
         </Link>
 
-        {/* MENU NAVIGASI (Tanpa Artikel) */}
+        {/* MENU NAVIGASI */}
         <div className="flex gap-6 items-center text-sm md:text-base font-medium">
           <NavLink to="/" className={getNavLinkClass}>
             Home
@@ -45,6 +45,12 @@ const Navbar = ({ onLogout }) => {
               <NavLink to="/pesan-tiket" className={getNavLinkClass}>
                 Pesan Tiket
               </NavLink>
+
+              {/* === MENU BARU: SEWA ALAT === */}
+              <NavLink to="/sewa-alat" className={getNavLinkClass}>
+                Sewa Alat
+              </NavLink>
+
               <NavLink to="/tiket-saya" className={getNavLinkClass}>
                 Tiket Saya
               </NavLink>
