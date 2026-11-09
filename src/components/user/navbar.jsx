@@ -57,6 +57,9 @@ const Navbar = ({ onLogout }) => {
               <NavLink to="/riwayat" className={getNavLinkClass}>
                 Riwayat
               </NavLink>
+              <NavLink to="/daftar-admin-gunung" className={getNavLinkClass}>
+                Daftar Admin Gunung
+              </NavLink>
               <NavLink to="/profile" className={getNavLinkClass}>
                 Profile
               </NavLink>
