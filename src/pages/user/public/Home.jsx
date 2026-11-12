@@ -1,87 +1,83 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import UserLayout from "../../../layouts/UserLayout";
 import CardGunung from "../cardGunung";
+import { getGunungs } from "../../../services/user/gunungService";
+import { getPromos } from "../../../services/user/promoService";
+
+const extractList = (res) =>
+  res?.data?.data?.data || res?.data?.data || res?.data || [];
 
 export default function Home() {
-  const gunungPopuler = [
-    {
-      id: 1,
-      nama: "Gunung Ciremai",
-      lokasi: "Jawa Barat",
-    },
-    {
-      id: 2,
-      nama: "Gunung Semeru",
-      lokasi: "Jawa Timur",
-    },
-    {
-      id: 3,
-      nama: "Gunung Merbabu",
-      lokasi: "Jawa Tengah",
-    },
-  ];
-
-  // Dummy Data Banner Promo (Slider Interaktif)
-  const dummyPromo = [
-    {
-      id: 1,
-      tag: "FLASH SALE 30%",
-      judul: "Diskon Tiket Pendakian Akhir Pekan",
-      deskripsi: "Pesan tiket rombongan minimal 5 orang dan dapatkan potongan harga spesial langsung di jalur resmi.",
-      kode: "SUMMIT30",
-      masaBerlaku: "Berlaku s/d 30 Nov 2026",
-      bgImage: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1200&auto=format&fit=crop",
-    },
-    {
-      id: 2,
-      tag: "VOUCHER SPESIAL",
-      judul: "Cashback Sewa Alat Basecamp Rp 50.000",
-      deskripsi: "Lengkapi kebutuhan mendakimu lebih hemat dengan voucher sewa tenda dan carrier di basecamp.",
-      kode: "SUMMITCAMP",
-      masaBerlaku: "Berlaku s/d 15 Des 2026",
-      bgImage: "https://images.unsplash.com/photo-1510312305653-8ed496efae75?q=80&w=1200&auto=format&fit=crop",
-    },
-    {
-      id: 3,
-      tag: "NEW MEMBER",
-      judul: "Gratis Biaya Layanan Pendaki Baru",
-      deskripsi: "Nikmati kemudahan registrasi tiket pertama tanpa biaya admin tambahan khusus member baru SummitGo.",
-      kode: "NEWPENDAN",
-      masaBerlaku: "Berlaku s/d 31 Des 2026",
-      bgImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop",
-    },
-  ];
-
+  const [gunungs, setGunungs] = useState([]);
+  const [promos, setPromos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [gunungRes, promoRes] = await Promise.allSettled([
+          getGunungs(),
+          getPromos(),
+        ]);
+
+        if (gunungRes.status === "fulfilled") {
+          const list = extractList(gunungRes.value);
+          setGunungs(Array.isArray(list) ? list : []);
+        } else {
+          console.log("ERROR HOME GUNUNG:", gunungRes.reason);
+          setGunungs([]);
+        }
+
+        if (promoRes.status === "fulfilled") {
+          const list = extractList(promoRes.value);
+          setPromos(Array.isArray(list) ? list : []);
+        } else {
+          console.log("ERROR HOME PROMO:", promoRes.reason);
+          setPromos([]);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const gunungPopuler = useMemo(() => gunungs.slice(0, 3), [gunungs]);
+
   const prevPromo = () => {
-    setCurrentPromoIndex((prev) =>
-      prev === 0 ? dummyPromo.length - 1 : prev - 1
-    );
+    if (promos.length === 0) return;
+    setCurrentPromoIndex((prev) => (prev === 0 ? promos.length - 1 : prev - 1));
   };
 
   const nextPromo = () => {
-    setCurrentPromoIndex((prev) =>
-      prev === dummyPromo.length - 1 ? 0 : prev + 1
-    );
+    if (promos.length === 0) return;
+    setCurrentPromoIndex((prev) => (prev === promos.length - 1 ? 0 : prev + 1));
   };
 
-  const promoAktif = dummyPromo[currentPromoIndex];
+  const promoAktif = promos[currentPromoIndex] || null;
+
+  const promoImage = (promo) => {
+    const raw = promo?.bgImage || promo?.gambar || promo?.image || promo?.banner || promo?.foto;
+    if (!raw) return "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1200&auto=format&fit=crop";
+    if (/^https?:\/\//i.test(raw)) return raw;
+    try {
+      const origin = new URL(process.env.REACT_APP_API_URL || "").origin;
+      return `${origin}/storage/${String(raw).replace(/^\/+/, "")}`;
+    } catch {
+      return raw;
+    }
+  };
 
   return (
     <UserLayout>
-      {/* HERO SECTION */}
       <section className="bg-[#244275] text-white pt-36 pb-24 px-6 text-center relative overflow-hidden">
-        
-        {/* Bulatan 1: Kiri Atas */}
         <div className="absolute top-[-100px] left-[-150px] w-[500px] h-[500px] bg-[#1a325a] rounded-full opacity-60 pointer-events-none"></div>
-
-        {/* Bulatan 2: Kanan Atas */}
         <div className="absolute top-[-80px] right-[-80px] w-[300px] h-[300px] bg-[#1a325a] rounded-full opacity-60 pointer-events-none"></div>
-
-        {/* Bulatan 3: Kanan Bawah */}
         <div className="absolute bottom-[-200px] right-[-100px] w-[600px] h-[600px] bg-[#1a325a] rounded-full opacity-70 pointer-events-none"></div>
 
         <div className="max-w-4xl mx-auto relative z-10">
@@ -91,7 +87,9 @@ export default function Home() {
           </h1>
 
           <p className="text-blue-100 text-sm md:text-lg max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
-            SummitGo adalah platform pemesanan tiket pendakian gunung dan penyewaan perlengkapan outdoor secara online yang terintegrasi untuk mempermudah pengalaman petualanganmu di seluruh Indonesia.
+            SummitGo adalah platform pemesanan tiket pendakian gunung dan
+            penyewaan perlengkapan outdoor secara online yang terintegrasi untuk
+            mempermudah pengalaman petualanganmu di seluruh Indonesia.
           </p>
 
           <Link
@@ -103,147 +101,133 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CONTAINER KONTEN UTAMA */}
       <div className="bg-[#f1f5f9] py-12 px-6">
         <div className="max-w-5xl mx-auto space-y-12">
-
           {/* BANNER PROMO */}
           <div className="relative group px-0 md:px-8">
-            
-            {/* Tombol Panah Kiri */}
-            <button 
-              onClick={prevPromo}
-              className="absolute left-0 md:left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-slate-700 shadow-md hover:bg-[#244275] hover:text-white flex items-center justify-center font-bold transition-all z-20 border border-slate-200 cursor-pointer"
-              title="Promo Sebelumnya"
-            >
-              &#10094;
-            </button>
+            {promos.length === 0 ? null : (
+              <>
+                <button
+                  onClick={prevPromo}
+                  className="absolute left-0 md:left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-slate-700 shadow-md hover:bg-[#244275] hover:text-white flex items-center justify-center font-bold transition-all z-20 border border-slate-200 cursor-pointer"
+                  title="Promo Sebelumnya"
+                >
+                  &#10094;
+                </button>
 
-            {/* Main Banner Card */}
-            <div className="relative rounded-2xl overflow-hidden shadow-md min-h-[240px] md:min-h-[260px] flex items-center transition-all duration-500">
-              
-              {/* Background Image */}
-              <div 
-                className="absolute inset-0 bg-cover bg-center transition-all duration-700 scale-105"
-                style={{ backgroundImage: `url(${promoAktif.bgImage})` }}
-              ></div>
-
-              {/* Dark Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30"></div>
-
-              {/* Konten Banner */}
-              <div className="relative z-10 p-6 md:p-10 text-white max-w-2xl w-full">
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <span className="bg-red-600 text-white font-black text-[10px] md:text-xs px-3 py-1 rounded-md uppercase tracking-wider shadow">
-                    {promoAktif.tag}
-                  </span>
-                  <span className="bg-white/20 backdrop-blur-md text-amber-300 font-semibold text-[10px] md:text-xs px-3 py-1 rounded-md">
-                    {promoAktif.masaBerlaku}
-                  </span>
-                </div>
-                
-                <h3 className="text-xl md:text-3xl font-black tracking-tight mb-2 drop-shadow">
-                  {promoAktif.judul}
-                </h3>
-                
-                <p className="text-slate-200 text-xs md:text-sm mb-4 font-normal leading-relaxed max-w-xl">
-                  {promoAktif.deskripsi}
-                </p>
-
-                <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/30 px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold">
-                  <span className="text-slate-300">Kode Promo:</span>
-                  <span className="text-[#f3e03b] tracking-wider">{promoAktif.kode}</span>
-                </div>
-              </div>
-
-              {/* Dot Indicators (Desktop) */}
-              <div className="absolute bottom-4 right-6 z-10 hidden md:flex gap-1.5">
-                {dummyPromo.map((item, index) => (
+                <div className="relative rounded-2xl overflow-hidden shadow-md min-h-[240px] md:min-h-[260px] flex items-center transition-all duration-500">
                   <div
-                    key={item.id}
-                    onClick={() => setCurrentPromoIndex(index)}
-                    className={`h-2 rounded-full cursor-pointer transition-all ${
-                      index === currentPromoIndex ? "w-6 bg-[#f3e03b]" : "w-2 bg-white/50"
-                    }`}
-                  />
-                ))}
-              </div>
+                    className="absolute inset-0 bg-cover bg-center transition-all duration-700 scale-105"
+                    style={{ backgroundImage: `url(${promoImage(promoAktif)})` }}
+                  ></div>
 
-            </div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30"></div>
 
-            {/* Tombol Panah Kanan */}
-            <button 
-              onClick={nextPromo}
-              className="absolute right-0 md:right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-slate-700 shadow-md hover:bg-[#244275] hover:text-white flex items-center justify-center font-bold transition-all z-20 border border-slate-200 cursor-pointer"
-              title="Promo Selanjutnya"
-            >
-              &#10095;
-            </button>
+                  <div className="relative z-10 p-6 md:p-10 text-white max-w-2xl w-full">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      {promoAktif?.tag || promoAktif?.tipe ? (
+                        <span className="bg-red-600 text-white font-black text-[10px] md:text-xs px-3 py-1 rounded-md uppercase tracking-wider shadow">
+                          {promoAktif.tag || promoAktif.tipe}
+                        </span>
+                      ) : null}
+                      {promoAktif?.masaBerlaku || promoAktif?.masa_berlaku || promoAktif?.berlaku_sampai ? (
+                        <span className="bg-white/20 backdrop-blur-md text-amber-300 font-semibold text-[10px] md:text-xs px-3 py-1 rounded-md">
+                          {promoAktif.masaBerlaku || promoAktif.masa_berlaku || promoAktif.berlaku_sampai}
+                        </span>
+                      ) : null}
+                    </div>
 
-            {/* Dot Indicators (Mobile) */}
-            <div className="flex md:hidden justify-center gap-1.5 mt-3">
-              {dummyPromo.map((item, index) => (
-                <div
-                  key={item.id}
-                  onClick={() => setCurrentPromoIndex(index)}
-                  className={`h-1.5 rounded-full cursor-pointer transition-all ${
-                    index === currentPromoIndex ? "w-6 bg-[#244275]" : "w-1.5 bg-slate-300"
-                  }`}
-                />
-              ))}
-            </div>
+                    <h3 className="text-xl md:text-3xl font-black tracking-tight mb-2 drop-shadow">
+                      {promoAktif?.judul || promoAktif?.title || promoAktif?.nama || "Promo Spesial"}
+                    </h3>
 
+                    <p className="text-slate-200 text-xs md:text-sm mb-4 font-normal leading-relaxed max-w-xl">
+                      {promoAktif?.deskripsi || promoAktif?.description || "Lihat detail promo terbaru dari SummitGo."}
+                    </p>
+
+                    {(promoAktif?.kode || promoAktif?.code || promoAktif?.kode_promo) ? (
+                      <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/30 px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold">
+                        <span className="text-slate-300">Kode Promo:</span>
+                        <span className="text-[#f3e03b] tracking-wider">
+                          {promoAktif.kode || promoAktif.code || promoAktif.kode_promo}
+                        </span>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="absolute bottom-4 right-6 z-10 hidden md:flex gap-1.5">
+                    {promos.map((item, index) => (
+                      <div
+                        key={item.id ?? index}
+                        onClick={() => setCurrentPromoIndex(index)}
+                        className={`h-2 rounded-full cursor-pointer transition-all ${
+                          index === currentPromoIndex ? "w-6 bg-[#f3e03b]" : "w-2 bg-white/50"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  onClick={nextPromo}
+                  className="absolute right-0 md:right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-slate-700 shadow-md hover:bg-[#244275] hover:text-white flex items-center justify-center font-bold transition-all z-20 border border-slate-200 cursor-pointer"
+                  title="Promo Selanjutnya"
+                >
+                  &#10095;
+                </button>
+
+                <div className="flex md:hidden justify-center gap-1.5 mt-3">
+                  {promos.map((item, index) => (
+                    <div
+                      key={item.id ?? index}
+                      onClick={() => setCurrentPromoIndex(index)}
+                      className={`h-1.5 rounded-full cursor-pointer transition-all ${
+                        index === currentPromoIndex ? "w-6 bg-[#244275]" : "w-1.5 bg-slate-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
-          {/* DAFTAR GUNUNG & SEARCH BAR */}
           <section className="text-center">
-            <h2 className="text-3xl font-extrabold text-[#244275] mb-2">
-              Daftar Gunung
-            </h2>
+            <h2 className="text-3xl font-extrabold text-[#244275] mb-2">Gunung Populer</h2>
             <p className="text-slate-500 text-sm mb-8">
               Nikmati pengalaman mendaki yang tak tergantikan
             </p>
 
-            {/* Kotak Pencarian */}
-            <div className="max-w-xl mx-auto mb-10 relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg
-                  className="w-5 h-5 text-slate-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+            {loading ? (
+              <div className="bg-white rounded-xl p-10 shadow-sm border border-slate-200 text-slate-500">
+                Memuat data gunung...
               </div>
-              <input
-                type="text"
-                placeholder="Cari Gunung yang ingin kamu daki..."
-                className="w-full pl-11 pr-4 py-3 rounded-full border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#244275] bg-white shadow-sm text-sm"
-              />
-            </div>
+            ) : gunungPopuler.length > 0 ? (
+              <div className="grid md:grid-cols-3 gap-6 text-left">
+                {gunungPopuler.map((gunung) => (
+                  <CardGunung key={gunung.id} gunung={gunung} />
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl p-10 shadow-sm border border-slate-200 text-slate-500">
+                Belum ada data gunung yang tersedia.
+              </div>
+            )}
 
-            {/* Kartu Gunung */}
-            <div className="grid md:grid-cols-3 gap-6 text-left">
-              {gunungPopuler.map((gunung) => (
-                <CardGunung key={gunung.id} gunung={gunung} />
-              ))}
+            <div className="mt-8">
+              <Link to="/gunung" className="text-[#244275] font-bold hover:underline">
+                Lihat semua gunung →
+              </Link>
             </div>
           </section>
 
-          {/* PROMO / INFORMASI SEWA PERALATAN */}
           <section className="bg-gradient-to-r from-[#244275] to-[#1a325a] text-white rounded-2xl p-8 md:p-10 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
               <h2 className="text-2xl md:text-3xl font-extrabold mb-2">
                 Butuh Perlengkapan Pendakian?
               </h2>
               <p className="text-blue-100 text-xs md:text-sm max-w-xl leading-relaxed">
-                Tidak perlu repot membawa beban berat dari rumah. Nikmati kemudahan sewa Tenda, Sleeping Bag, Carrier, dan alat outdoor berkualitas langsung secara praktis.
+                Tidak perlu repot membawa beban berat dari rumah. Nikmati
+                kemudahan sewa peralatan outdoor berkualitas secara praktis.
               </p>
             </div>
             <Link
@@ -254,7 +238,6 @@ export default function Home() {
             </Link>
           </section>
 
-          {/* CARA PEMESANAN TIKET */}
           <section className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
             <h2 className="text-2xl font-extrabold text-center text-[#244275] mb-2">
               Cara Pemesanan Tiket
@@ -264,54 +247,25 @@ export default function Home() {
             </p>
 
             <div className="grid md:grid-cols-4 gap-6 text-center">
-              
-              {/* Langkah 1 */}
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all duration-300 flex flex-col items-center">
-                <div className="w-12 h-12 mb-3 rounded-full bg-[#244275] text-white flex items-center justify-center font-extrabold text-lg shadow-sm">
-                  1
+              {[
+                ["1", "Daftar & Login", "Buat akun pengguna baru atau masuk dengan akun terdaftar."],
+                ["2", "Pilih Gunung & Jalur", "Cari gunung tujuan, cek kuota, dan tentukan jalur pendakian."],
+                ["3", "Isi Data & Pesan", "Tentukan tanggal pendakian dan isi data pemesanan."],
+                ["4", "Bayar & E-Tiket", "Lakukan pembayaran dan dapatkan e-tiket resmi untuk check-in."],
+              ].map(([step, title, desc]) => (
+                <div
+                  key={step}
+                  className="p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all duration-300 flex flex-col items-center"
+                >
+                  <div className="w-12 h-12 mb-3 rounded-full bg-[#244275] text-white flex items-center justify-center font-extrabold text-lg shadow-sm">
+                    {step}
+                  </div>
+                  <h3 className="font-bold text-[#244275] text-base mb-1">{title}</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">{desc}</p>
                 </div>
-                <h3 className="font-bold text-[#244275] text-base mb-1">Daftar & Login</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Buat akun pengguna baru atau masuk dengan akun terdaftar.
-                </p>
-              </div>
-
-              {/* Langkah 2 */}
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all duration-300 flex flex-col items-center">
-                <div className="w-12 h-12 mb-3 rounded-full bg-[#244275] text-white flex items-center justify-center font-extrabold text-lg shadow-sm">
-                  2
-                </div>
-                <h3 className="font-bold text-[#244275] text-base mb-1">Pilih Gunung & Jalur</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Cari gunung tujuan, cek kuota, dan tentukan jalur pendakian.
-                </p>
-              </div>
-
-              {/* Langkah 3 */}
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all duration-300 flex flex-col items-center">
-                <div className="w-12 h-12 mb-3 rounded-full bg-[#244275] text-white flex items-center justify-center font-extrabold text-lg shadow-sm">
-                  3
-                </div>
-                <h3 className="font-bold text-[#244275] text-base mb-1">Isi Data & Pesan</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Tentukan tanggal pendakian dan isi data anggota rombongan.
-                </p>
-              </div>
-
-              {/* Langkah 4 */}
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all duration-300 flex flex-col items-center">
-                <div className="w-12 h-12 mb-3 rounded-full bg-[#244275] text-white flex items-center justify-center font-extrabold text-lg shadow-sm">
-                  4
-                </div>
-                <h3 className="font-bold text-[#244275] text-base mb-1">Bayar & E-Tiket</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Lakukan pembayaran dan dapatkan e-tiket resmi untuk check-in.
-                </p>
-              </div>
-
+              ))}
             </div>
           </section>
-
         </div>
       </div>
     </UserLayout>

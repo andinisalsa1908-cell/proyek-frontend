@@ -1,8 +1,10 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { logout } from "../../services/auth/authService";
 
 const Navbar = ({ onLogout }) => {
-  const isLogin = localStorage.getItem("token");
+  const isLogin = !!localStorage.getItem("token");
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isHomePage = location.pathname === "/";
 
@@ -11,6 +13,18 @@ const Navbar = ({ onLogout }) => {
       ? "text-white font-extrabold border-b-2 border-white pb-1 tracking-wide transition-all transform scale-105"
       : "text-blue-100/80 hover:text-white hover:scale-105 transition-all";
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.log("ERROR LOGOUT:", err.response?.data || err);
+      localStorage.clear();
+    } finally {
+      if (typeof onLogout === "function") onLogout();
+      navigate("/login", { replace: true });
+    }
+  };
+
   return (
     <nav
       className={`text-white transition-all duration-300 relative z-20 ${
@@ -18,16 +32,15 @@ const Navbar = ({ onLogout }) => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center">
-
         {/* LOGO */}
         <Link to="/" className="flex items-center">
-          <img 
-            src="/logo.png" 
-            alt="Logo SummitGo" 
-            className="h-16 md:h-20 w-auto object-contain transition-all" 
-            onError={(e) => { 
-              e.target.style.display = 'none'; 
-            }} 
+          <img
+            src="/logo.png"
+            alt="Logo SummitGo"
+            className="h-16 md:h-20 w-auto object-contain transition-all"
+            onError={(e) => {
+              e.target.style.display = "none";
+            }}
           />
         </Link>
 
@@ -45,12 +58,9 @@ const Navbar = ({ onLogout }) => {
               <NavLink to="/pesan-tiket" className={getNavLinkClass}>
                 Pesan Tiket
               </NavLink>
-
-              {/* === MENU BARU: SEWA ALAT === */}
               <NavLink to="/sewa-alat" className={getNavLinkClass}>
                 Sewa Alat
               </NavLink>
-
               <NavLink to="/tiket-saya" className={getNavLinkClass}>
                 Tiket Saya
               </NavLink>
@@ -63,23 +73,24 @@ const Navbar = ({ onLogout }) => {
               <NavLink to="/profile" className={getNavLinkClass}>
                 Profile
               </NavLink>
-              
-              <Link to="/logout" className="text-blue-100/80 hover:text-white transition-all">
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="text-blue-100/80 hover:text-white transition-all"
+              >
                 Logout
-              </Link>
+              </button>
             </>
           ) : (
-            <>
-              <Link 
-                to="/login" 
-                className="bg-[#f3e03b] hover:bg-yellow-400 text-[#244275] font-extrabold px-5 py-2 rounded-full transition-all shadow-sm"
-              >
-                Login
-              </Link>
-            </>
+            <Link
+              to="/login"
+              className="bg-[#f3e03b] hover:bg-yellow-400 text-[#244275] font-extrabold px-5 py-2 rounded-full transition-all shadow-sm"
+            >
+              Login
+            </Link>
           )}
         </div>
-
       </div>
     </nav>
   );

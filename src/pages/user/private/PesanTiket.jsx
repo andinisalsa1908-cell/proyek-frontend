@@ -1,27 +1,36 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import UserPrivateLayout from "../../../layouts/UserPrivateLayout";
 import { getGunungs } from "../../../services/user/gunungService";
 import { createBooking } from "../../../services/user/tiketService";
 
+const extractList = (res) =>
+  res?.data?.data?.data || res?.data?.data || res?.data || [];
+
 export default function PesanTiket() {
+  const [searchParams] = useSearchParams();
   const [gunungs, setGunungs] = useState([]);
 
   const [form, setForm] = useState({
-    gunung_id: "",
+    gunung_id: searchParams.get("gunung_id") || "",
     tanggal: "",
     jumlah_pendaki: 1,
+    jalur: searchParams.get("jalur") || "",
   });
 
   useEffect(() => {
     loadGunung();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadGunung = async () => {
     try {
       const res = await getGunungs();
-      setGunungs(res.data);
+      const list = extractList(res);
+      setGunungs(Array.isArray(list) ? list : []);
     } catch (err) {
       console.log(err);
+      setGunungs([]);
     }
   };
 
@@ -29,10 +38,15 @@ export default function PesanTiket() {
     e.preventDefault();
 
     try {
-      await createBooking(form);
+      await createBooking({
+        ...form,
+        gunung_id: form.gunung_id ? Number(form.gunung_id) : form.gunung_id,
+        jumlah_pendaki: Number(form.jumlah_pendaki) || 1,
+        tanggal_naik: form.tanggal,
+      });
       alert("Booking berhasil");
     } catch (err) {
-      alert("Booking gagal");
+      alert(err.response?.data?.message || "Booking gagal");
     }
   };
 

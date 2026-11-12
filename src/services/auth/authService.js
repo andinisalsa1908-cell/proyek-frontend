@@ -21,3 +21,6 @@ export const logout = async () => {
   await API.post("/logout");
   localStorage.clear();
 };
+
+export const googleLogin = (data) =>
+  API.post("/google-login", data);

@@ -1,62 +1,74 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import UserLayout from "../../../layouts/UserLayout";
 import CardGunung from "../cardGunung";
+import { getGunungs } from "../../../services/user/gunungService";
+
+const extractList = (res) =>
+  res?.data?.data?.data || res?.data?.data || res?.data || [];
 
 export default function DaftarGunung() {
+  const [gunungs, setGunungs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLokasi, setSelectedLokasi] = useState("Semua");
 
-  const gunungs = [
-    {
-      id: 1,
-      nama: "Gunung Ciremai",
-      lokasi: "Jawa Barat",
-    },
-    {
-      id: 2,
-      nama: "Gunung Merbabu",
-      lokasi: "Jawa Tengah",
-    },
-    {
-      id: 3,
-      nama: "Gunung Semeru",
-      lokasi: "Jawa Timur",
-    },
-    {
-      id: 4,
-      nama: "Gunung Slamet",
-      lokasi: "Jawa Tengah",
-    },
-  ];
+  useEffect(() => {
+    const fetchGunungs = async () => {
+      try {
+        setLoading(true);
+        setError("");
+        const res = await getGunungs();
+        const list = extractList(res);
+        setGunungs(Array.isArray(list) ? list : []);
+      } catch (err) {
+        console.log("ERROR DAFTAR GUNUNG:", err.response?.data || err);
+        setError("Gagal memuat daftar gunung. Silakan coba lagi.");
+        setGunungs([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Filter pencarian dan wilayah secara real-time
-  const filteredGunungs = gunungs.filter((gunung) => {
-    const matchesSearch = gunung.nama
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchesLokasi =
-      selectedLokasi === "Semua" || gunung.lokasi === selectedLokasi;
-    return matchesSearch && matchesLokasi;
-  });
+    fetchGunungs();
+  }, []);
+
+  const lokasiOptions = useMemo(() => {
+    const unique = Array.from(
+      new Set(
+        gunungs
+          .map((g) => g.lokasi || g.location || g.provinsi)
+          .filter(Boolean)
+      )
+    );
+    return ["Semua", ...unique];
+  }, [gunungs]);
+
+  const filteredGunungs = useMemo(() => {
+    return gunungs.filter((gunung) => {
+      const nama = (gunung.nama || gunung.name || "").toLowerCase();
+      const lokasi = gunung.lokasi || gunung.location || gunung.provinsi || "";
+      const matchesSearch = nama.includes(searchQuery.toLowerCase());
+      const matchesLokasi =
+        selectedLokasi === "Semua" || lokasi === selectedLokasi;
+      return matchesSearch && matchesLokasi;
+    });
+  }, [gunungs, searchQuery, selectedLokasi]);
 
   return (
     <UserLayout>
       <div className="max-w-7xl mx-auto px-6 pt-6 pb-16">
-
-        {/* HEADER JUDUL */}
         <div className="mb-6 border-b border-slate-200 pb-4">
           <h1 className="text-3xl font-extrabold text-[#244275]">
             Daftar Gunung
           </h1>
           <p className="text-slate-500 text-xs md:text-sm mt-1">
-            Temukan dan pilih gunung favoritmu untuk memulai petualangan pendakian.
+            Temukan dan pilih gunung favoritmu untuk memulai petualangan
+            pendakian.
           </p>
         </div>
 
-        {/* PANEL PENCARIAN & FILTER WILAYAH */}
         <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          
-          {/* Input Pencarian */}
           <div className="relative w-full md:w-1/2">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
               <svg
@@ -82,10 +94,11 @@ export default function DaftarGunung() {
             />
           </div>
 
-          {/* Tombol Filter Wilayah */}
           <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-            <span className="text-xs font-semibold text-slate-400 mr-1 hidden md:inline">Filter:</span>
-            {["Semua", "Jawa Barat", "Jawa Tengah", "Jawa Timur"].map((lokasi) => (
+            <span className="text-xs font-semibold text-slate-400 mr-1 hidden md:inline">
+              Filter:
+            </span>
+            {lokasiOptions.map((lokasi) => (
               <button
                 key={lokasi}
                 onClick={() => setSelectedLokasi(lokasi)}
@@ -99,17 +112,20 @@ export default function DaftarGunung() {
               </button>
             ))}
           </div>
-
         </div>
 
-        {/* GRID KARTU GUNUNG */}
-        {filteredGunungs.length > 0 ? (
+        {loading ? (
+          <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-slate-200 text-slate-500">
+            Memuat daftar gunung...
+          </div>
+        ) : error ? (
+          <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-slate-200 text-red-500">
+            {error}
+          </div>
+        ) : filteredGunungs.length > 0 ? (
           <div className="grid md:grid-cols-3 gap-6">
             {filteredGunungs.map((gunung) => (
-              <CardGunung
-                key={gunung.id}
-                gunung={gunung}
-              />
+              <CardGunung key={gunung.id} gunung={gunung} />
             ))}
           </div>
         ) : (
@@ -119,11 +135,12 @@ export default function DaftarGunung() {
               Gunung Tidak Ditemukan
             </h3>
             <p className="text-xs text-slate-500">
-              Coba kata kunci lain atau ubah pilihan filter wilayah.
+              {gunungs.length === 0
+                ? "Belum ada data gunung yang tersedia."
+                : "Coba kata kunci lain atau ubah pilihan filter wilayah."}
             </p>
           </div>
         )}
-
       </div>
     </UserLayout>
   );

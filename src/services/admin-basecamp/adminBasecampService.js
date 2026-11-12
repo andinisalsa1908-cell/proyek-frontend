@@ -71,7 +71,7 @@ export const createPeralatan = (basecampId, data) =>
   });
 
 export const updatePeralatan = (basecampId, id, data) =>
-  API.post(`/admin-basecamp/basecamps/${basecampId}/peralatans/${id}`, data, {
+  API.put(`/admin-basecamp/basecamps/${basecampId}/peralatans/${id}`, data, {
     headers: {
       'Content-Type': 'multipart/form-data',
     }
