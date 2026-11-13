@@ -105,7 +105,29 @@ export default function Home() {
         <div className="max-w-5xl mx-auto space-y-12">
           {/* BANNER PROMO */}
           <div className="relative group px-0 md:px-8">
-            {promos.length === 0 ? null : (
+            {promos.length === 0 ? (
+              <div className="relative rounded-2xl overflow-hidden shadow-md min-h-[240px] md:min-h-[260px] flex items-center">
+                <div
+                  className="absolute inset-0 bg-cover bg-center scale-105"
+                  style={{
+                    backgroundImage:
+                      "url(https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1200&auto=format&fit=crop)",
+                  }}
+                ></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30"></div>
+                <div className="relative z-10 p-6 md:p-10 text-white max-w-2xl w-full">
+                  <span className="inline-block bg-[#f3e03b] text-[#244275] font-black text-[10px] md:text-xs px-3 py-1 rounded-md uppercase tracking-wider shadow mb-3">
+                    Promo
+                  </span>
+                  <h3 className="text-xl md:text-3xl font-black tracking-tight mb-2 drop-shadow">
+                    Promo Spesial SummitGo
+                  </h3>
+                  <p className="text-slate-200 text-xs md:text-sm font-normal leading-relaxed max-w-xl">
+                    Pantau terus halaman ini untuk informasi promo dan penawaran menarik dari SummitGo.
+                  </p>
+                </div>
+              </div>
+            ) : (
               <>
                 <button
                   onClick={prevPromo}

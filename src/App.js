@@ -13,6 +13,7 @@ import Artikel from "./pages/user/public/Artikel";
 import DetailArtikel from "./pages/user/public/DetailArtikel";
 import DaftarGunung from "./pages/user/public/DaftarGunung";
 import DetailGunung from "./pages/user/public/DetailGunung";
+import DetailBasecamp from "./pages/user/public/DetailBasecamp";
 
 // Private
 import PesanTiket from "./pages/user/private/PesanTiket";
@@ -58,6 +59,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/gunung" element={<DaftarGunung />} />
         <Route path="/gunung/:id" element={<DetailGunung />} />
+        <Route path="/gunung/:id/basecamp/:basecampId" element={<DetailBasecamp />} />
         <Route path="/artikel" element={<Artikel />} />
         <Route path="/artikel/:id" element={<DetailArtikel />} />
 

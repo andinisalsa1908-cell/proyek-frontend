@@ -5,3 +5,4 @@ export * from "./pengajuanService";
 export * from "./artikelService";
 export * from "./promoService";
 export * from "./sewaService";
+export * from "./basecampService";
