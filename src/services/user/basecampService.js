@@ -46,25 +46,3 @@ export const getBasecampDetail = async (basecampId) => {
 
   throw lastError;
 };
-
-export const getBasecampJalurs = async (basecampId) => {
-  const endpoints = [
-    `/basecamps/${basecampId}/jalurs`,
-    `/user/basecamps/${basecampId}/jalurs`,
-    `/jalurs`,
-  ];
-
-  let lastError;
-  for (const endpoint of endpoints) {
-    try {
-      const res = await API.get(endpoint, {
-        params: endpoint === "/jalurs" ? { basecamp_id: basecampId } : undefined,
-      });
-      return res;
-    } catch (err) {
-      lastError = err;
-    }
-  }
-
-  throw lastError;
-};

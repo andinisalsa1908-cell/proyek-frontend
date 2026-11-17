@@ -1,17 +1,28 @@
 import API from "../api";
 
 // 🔹 BOOKINGS
-export const getBookings = () =>
-  API.get("/admin-basecamp/bookings");
+export const getBookings = (params) =>
+  API.get("/admin-basecamp/bookings", { params });
 
 export const getBookingDetail = (id) =>
   API.get(`/admin-basecamp/bookings/${id}`);
+
+export const confirmBooking = (id) =>
+  API.patch(`/admin-basecamp/bookings/${id}/confirm`);
 
 export const checkinBooking = (id) =>
   API.patch(`/admin-basecamp/bookings/${id}/checkin`);
 
 export const checkoutBooking = (id) =>
   API.patch(`/admin-basecamp/bookings/${id}/checkout`);
+
+
+// 🔹 BASECAMP (harga tiket dikelola admin basecamp)
+export const getBasecamp = () =>
+  API.get("/admin-basecamp/basecamp");
+
+export const updateHargaTiket = (data) =>
+  API.put("/admin-basecamp/basecamp/harga-tiket", data);
 
 
 // 🔹 KUOTA
@@ -29,31 +40,6 @@ export const updateKuota = (basecampId, id, data) =>
 
 export const deleteKuota = (basecampId, id) =>
   API.delete(`/admin-basecamp/basecamps/${basecampId}/kuotas/${id}`);
-
-
-// 🔹 JALUR
-export const getJalurs = (basecampId) =>
-  API.get(`/admin-basecamp/basecamps/${basecampId}/jalurs`);
-
-export const getJalurDetail = (basecampId, id) =>
-  API.get(`/admin-basecamp/basecamps/${basecampId}/jalurs/${id}`);
-
-export const createJalur = (basecampId, data) =>
-  API.post(`/admin-basecamp/basecamps/${basecampId}/jalurs`, data, {
-    headers: {
-      'Content-Type': 'multipart:form-data',
-    }
-  });
-
-export const updateJalur = (basecampId, id, data) =>
-  API.post(`/admin-basecamp/basecamps/${basecampId}/jalurs/${id}`, data, {
-    headers: {
-      'Content-Type': 'multipart:form-data',
-    }
-  });
-
-export const deleteJalur = (basecampId, id) =>
-  API.delete(`/admin-basecamp/basecamps/${basecampId}/jalurs/${id}`);
 
 
 // 🔹 PERALATAN

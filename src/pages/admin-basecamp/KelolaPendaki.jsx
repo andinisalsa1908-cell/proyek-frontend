@@ -2,26 +2,40 @@ import React, { useEffect, useState } from 'react';
 import {
   Search,
   Calendar,
-  MapPin,
   CheckCircle,
-  LogOut
+  LogOut,
+  BadgeCheck,
+  Loader2
 } from 'lucide-react';
 
 // 🔹 SERVICES
 import {
   getBookings,
+  confirmBooking,
   checkinBooking,
   checkoutBooking
 } from '../../services/admin-basecamp/adminBasecampService';
 
+const ambilPesanError = (err, fallback) => {
+  const data = err?.response?.data;
+
+  if (data?.errors) {
+    const pesan = Object.values(data.errors).flat().join(', ');
+    if (pesan) return pesan;
+  }
+
+  return data?.message || fallback;
+};
+
 const KelolaPendaki = () => {
 
   const [daftarPendaki, setDaftarPendaki] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [processingId, setProcessingId] = useState(null);
 
   // 🔹 FILTER
   const [searchTerm, setSearchTerm] = useState('');
   const [filterTanggal, setFilterTanggal] = useState('');
-  const [filterJalur, setFilterJalur] = useState('');
 
   // =========================
   // FETCH BOOKINGS
@@ -31,64 +45,62 @@ const KelolaPendaki = () => {
   }, []);
 
   const fetchBookings = async () => {
+    setLoading(true);
+
     try {
 
       const res = await getBookings();
-
-      console.log("BOOKINGS:", res.data);
 
       setDaftarPendaki(
         res.data.data?.data || res.data.data || []
       );
 
     } catch (err) {
+
       console.log(err.response?.data);
+
+    } finally {
+      setLoading(false);
     }
   };
 
   // =========================
-  // CHECKIN
+  // AKSI
   // =========================
-  const handleCheckin = async (id) => {
+  const handleAction = async (id, aksi) => {
 
-    if (!window.confirm("Check-in pendaki ini?")) return;
+    const label = {
+      confirm: 'Konfirmasi booking pendaki ini?',
+      checkin: 'Check-in pendaki ini?',
+      checkout: 'Checkout pendaki ini?'
+    }[aksi];
+
+    if (!window.confirm(label)) return;
+
+    setProcessingId(id);
 
     try {
 
-      await checkinBooking(id);
+      if (aksi === 'confirm') {
+        await confirmBooking(id);
+        alert("Berhasil konfirmasi booking");
+      } else if (aksi === 'checkin') {
+        await checkinBooking(id);
+        alert("Berhasil check-in");
+      } else {
+        await checkoutBooking(id);
+        alert("Berhasil checkout");
+      }
 
-      alert("Berhasil check-in");
-
-      fetchBookings();
+      await fetchBookings();
 
     } catch (err) {
 
       console.log(err.response?.data);
 
-      alert("Gagal check-in");
-    }
-  };
-
-  // =========================
-  // CHECKOUT
-  // =========================
-  const handleCheckout = async (id) => {
-
-    if (!window.confirm("Checkout pendaki ini?")) return;
-
-    try {
-
-      await checkoutBooking(id);
-
-      alert("Berhasil checkout");
-
-      fetchBookings();
-
-    } catch (err) {
-
-      console.log(err.response?.data);
-
-      alert("Gagal checkout");
+      alert(ambilPesanError(err, "Aksi gagal"));
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -103,17 +115,18 @@ const KelolaPendaki = () => {
     const email =
       item.user?.email?.toLowerCase() || '';
 
-    const jalur =
-      item.jalur?.nama?.toLowerCase() || '';
+    const kode =
+      (item.kode_booking || item.order_id || '').toLowerCase();
 
     const tanggal =
       item.tanggal_naik || '';
 
-    return (
-      (nama.includes(searchTerm.toLowerCase()) ||
-        email.includes(searchTerm.toLowerCase())) &&
+    const keyword = searchTerm.toLowerCase();
 
-      jalur.includes(filterJalur.toLowerCase()) &&
+    return (
+      (nama.includes(keyword) ||
+        email.includes(keyword) ||
+        kode.includes(keyword)) &&
 
       (filterTanggal === '' ||
         tanggal === filterTanggal)
@@ -139,9 +152,75 @@ const KelolaPendaki = () => {
       case 'completed':
         return 'bg-gray-200 text-gray-700';
 
+      case 'cancelled':
+        return 'bg-red-100 text-red-700';
+
       default:
         return 'bg-gray-100 text-gray-700';
     }
+  };
+
+  const renderAksi = (item) => {
+    const sedangProses = processingId === item.id;
+
+    if (sedangProses) {
+      return (
+        <Loader2 size={22} className="text-[#24426d] animate-spin" />
+      );
+    }
+
+    // Belum dibayar / belum dikonfirmasi
+    if (item.status === 'pending') {
+      return (
+        <button
+          onClick={() => handleAction(item.id, 'confirm')}
+          className="text-blue-600 hover:scale-110"
+          title="Konfirmasi booking"
+        >
+          <BadgeCheck size={22} />
+        </button>
+      );
+    }
+
+    // Sudah selesai
+    if (item.status === 'completed' || item.checkout_at) {
+      return (
+        <span
+          className="text-green-600"
+          title={`Selesai ${item.checkout_at ? new Date(item.checkout_at).toLocaleString('id-ID') : ''}`}
+        >
+          <CheckCircle size={22} />
+        </span>
+      );
+    }
+
+    // Sudah check-in, belum checkout
+    if (item.checkin_at) {
+      return (
+        <button
+          onClick={() => handleAction(item.id, 'checkout')}
+          className="text-red-600 hover:scale-110"
+          title="Checkout pendaki"
+        >
+          <LogOut size={22} />
+        </button>
+      );
+    }
+
+    // Sudah dikonfirmasi, belum check-in
+    if (item.status === 'confirmed') {
+      return (
+        <button
+          onClick={() => handleAction(item.id, 'checkin')}
+          className="text-green-600 hover:scale-110"
+          title="Check-in pendaki"
+        >
+          <CheckCircle size={22} />
+        </button>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -153,7 +232,7 @@ const KelolaPendaki = () => {
       </h1>
 
       {/* FILTER */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-2 gap-4 mb-8">
 
         {/* SEARCH */}
         <div className="relative">
@@ -164,7 +243,7 @@ const KelolaPendaki = () => {
 
           <input
             type="text"
-            placeholder="Cari Nama / Email..."
+            placeholder="Cari Nama / Email / Kode Booking..."
             className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full"
             value={searchTerm}
             onChange={(e) =>
@@ -189,24 +268,6 @@ const KelolaPendaki = () => {
             }
           />
         </div>
-
-        {/* JALUR */}
-        <div className="relative">
-          <MapPin
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            size={20}
-          />
-
-          <input
-            type="text"
-            placeholder="Filter Jalur..."
-            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full"
-            value={filterJalur}
-            onChange={(e) =>
-              setFilterJalur(e.target.value)
-            }
-          />
-        </div>
       </div>
 
       {/* TABLE */}
@@ -216,7 +277,7 @@ const KelolaPendaki = () => {
         <div className="grid grid-cols-7 bg-[#b9d1f1] p-4 rounded-full mb-6 shadow-sm">
           <div className="text-center font-bold">Nama</div>
           <div className="text-center font-bold">Email</div>
-          <div className="text-center font-bold">Jalur</div>
+          <div className="text-center font-bold">Basecamp</div>
           <div className="text-center font-bold">Tanggal</div>
           <div className="text-center font-bold">Total</div>
           <div className="text-center font-bold">Status</div>
@@ -226,7 +287,14 @@ const KelolaPendaki = () => {
         {/* DATA */}
         <div className="space-y-4">
 
-          {dataTerfilter.length > 0 ? (
+          {loading ? (
+
+            <div className="text-center py-20 text-gray-400 flex flex-col items-center gap-3">
+              <Loader2 size={40} className="animate-spin" />
+              Memuat data pendaki...
+            </div>
+
+          ) : dataTerfilter.length > 0 ? (
 
             dataTerfilter.map((item) => (
 
@@ -240,14 +308,17 @@ const KelolaPendaki = () => {
                   {item.user?.name || '-'}
                 </div>
 
-                {/* EMAIL */}
+                {/* EMAIL / KODE */}
                 <div className="text-center text-sm truncate px-2">
-                  {item.user?.email || '-'}
+                  <div className="truncate">{item.user?.email || '-'}</div>
+                  <div className="text-[10px] text-gray-400 font-semibold truncate">
+                    {item.kode_booking || item.order_id || '-'}
+                  </div>
                 </div>
 
-                {/* JALUR */}
+                {/* BASECAMP */}
                 <div className="text-center">
-                  {item.jalur?.nama || '-'}
+                  {item.basecamp?.nama || '-'}
                 </div>
 
                 {/* TANGGAL */}
@@ -257,7 +328,7 @@ const KelolaPendaki = () => {
 
                 {/* TOTAL */}
                 <div className="text-center">
-                  Rp {item.total_harga || 0}
+                  Rp {Number(item.total_price || 0).toLocaleString('id-ID')}
                 </div>
 
                 {/* STATUS */}
@@ -267,35 +338,17 @@ const KelolaPendaki = () => {
                   >
                     {item.status}
                   </span>
+
+                  {item.checkin_at && !item.checkout_at && (
+                    <div className="text-[10px] text-green-600 font-bold mt-1 uppercase">
+                      Sedang mendaki
+                    </div>
+                  )}
                 </div>
 
                 {/* AKSI */}
                 <div className="flex justify-center gap-3">
-
-                  {/* CHECKIN */}
-                  {item.status === 'confirmed' && (
-                    <button
-                      onClick={() =>
-                        handleCheckin(item.id)
-                      }
-                      className="text-green-600 hover:scale-110"
-                    >
-                      <CheckCircle size={22} />
-                    </button>
-                  )}
-
-                  {/* CHECKOUT */}
-                  {item.status === 'checkin' && (
-                    <button
-                      onClick={() =>
-                        handleCheckout(item.id)
-                      }
-                      className="text-red-600 hover:scale-110"
-                    >
-                      <LogOut size={22} />
-                    </button>
-                  )}
-
+                  {renderAksi(item)}
                 </div>
               </div>
             ))

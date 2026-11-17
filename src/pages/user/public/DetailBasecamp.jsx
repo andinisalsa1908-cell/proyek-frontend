@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import {
   getBasecampDetail,
-  getBasecampJalurs,
 } from "../../../services/user/basecampService";
 import { createBooking } from "../../../services/user/tiketService";
 import { getPromos } from "../../../services/user/promoService";
@@ -31,7 +30,6 @@ export default function DetailBasecamp() {
   const isLoggedIn = !!localStorage.getItem("token");
 
   const [basecamp, setBasecamp] = useState(null);
-  const [jalurs, setJalurs] = useState([]);
   const [promos, setPromos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -42,8 +40,6 @@ export default function DetailBasecamp() {
     tanggal_masuk: "",
     tanggal_keluar: "",
     jumlah_pendaki: 1,
-    jalur: "",
-    jalur_id: "",
   });
 
   useEffect(() => {
@@ -60,22 +56,6 @@ export default function DetailBasecamp() {
         if (basecampRes.status === "fulfilled") {
           const data = extractItem(basecampRes.value);
           setBasecamp(data);
-
-          let jalurList = [];
-          const embedded = data?.jalurs || data?.jalur || data?.trails || data?.routes;
-          if (Array.isArray(embedded)) {
-            jalurList = embedded;
-          } else {
-            try {
-              const jalurRes = await getBasecampJalurs(basecampId);
-              const list = extractList(jalurRes);
-              jalurList = Array.isArray(list) ? list : [];
-            } catch (err) {
-              console.log("ERROR JALUR BASECAMP:", err.response?.data || err);
-              jalurList = [];
-            }
-          }
-          setJalurs(Array.isArray(jalurList) ? jalurList : []);
         } else {
           throw basecampRes.reason;
         }
@@ -91,7 +71,6 @@ export default function DetailBasecamp() {
         console.log("ERROR DETAIL BASECAMP:", err.response?.data || err);
         setError("Gagal memuat detail basecamp. Silakan coba lagi.");
         setBasecamp(null);
-        setJalurs([]);
       } finally {
         setLoading(false);
       }
@@ -99,18 +78,6 @@ export default function DetailBasecamp() {
 
     if (basecampId) fetchDetail();
   }, [basecampId]);
-
-  const normalizedJalurs = useMemo(() => {
-    return jalurs.map((j, idx) => {
-      if (typeof j === "string") return { id: idx, nama: j };
-      return {
-        id: j.id ?? idx,
-        nama: j.nama || j.name || j.nama_jalur || j.jalur || `Jalur ${idx + 1}`,
-        status: j.status || j.status_jalur || null,
-        kuota: j.kuota ?? j.kuota_harian ?? j.sisa_kuota ?? null,
-      };
-    });
-  }, [jalurs]);
 
   const relatedPromos = useMemo(() => {
     if (!basecamp) return promos;
@@ -148,10 +115,6 @@ export default function DetailBasecamp() {
       setBookingMsg({ type: "error", text: "Tanggal keluar tidak boleh sebelum tanggal masuk." });
       return;
     }
-    if (normalizedJalurs.length > 0 && !form.jalur && !form.jalur_id) {
-      setBookingMsg({ type: "error", text: "Pilih jalur pendakian terlebih dahulu." });
-      return;
-    }
 
     const gunungId = basecamp?.gunung_id || basecamp?.gunung?.id || id;
 
@@ -160,8 +123,6 @@ export default function DetailBasecamp() {
       await createBooking({
         gunung_id: gunungId ? Number(gunungId) : gunungId,
         basecamp_id: Number(basecampId) || basecampId,
-        jalur: form.jalur || undefined,
-        jalur_id: form.jalur_id || undefined,
         tanggal_masuk: form.tanggal_masuk,
         tanggal_keluar: form.tanggal_keluar,
         tanggal: form.tanggal_masuk,
@@ -281,40 +242,6 @@ export default function DetailBasecamp() {
                     </p>
                   ) : null}
                 </div>
-
-                {normalizedJalurs.length > 0 && (
-                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-5">
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-blue-100 mb-3">
-                      Pilih Jalur
-                    </h3>
-                    <div className="grid sm:grid-cols-2 gap-2">
-                      {normalizedJalurs.map((j) => {
-                        const selected = String(form.jalur_id) === String(j.id) || form.jalur === j.nama;
-                        return (
-                          <button
-                            type="button"
-                            key={j.id}
-                            onClick={() => setForm((prev) => ({ ...prev, jalur: j.nama, jalur_id: j.id }))}
-                            className={`text-left px-4 py-3 rounded-xl border transition-all ${
-                              selected
-                                ? "bg-white text-[#244275] border-white"
-                                : "bg-white/5 text-white border-white/20 hover:bg-white/10"
-                            }`}
-                          >
-                            <p className="font-semibold text-sm">{j.nama}</p>
-                            {(j.status || j.kuota !== null) && (
-                              <p className={`text-xs mt-1 ${selected ? "text-slate-500" : "text-blue-100/80"}`}>
-                                {j.status ? String(j.status).toUpperCase() : ""}
-                                {j.status && j.kuota !== null && j.kuota !== undefined ? " • " : ""}
-                                {j.kuota !== null && j.kuota !== undefined ? `Kuota: ${j.kuota}` : ""}
-                              </p>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* KANAN: form booking */}
@@ -355,12 +282,6 @@ export default function DetailBasecamp() {
                           ) : null}
                         </div>
                       ) : null}
-
-                      {normalizedJalurs.length > 0 && (
-                        <div className="text-xs text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
-                          Jalur dipilih: <span className="font-bold text-[#244275]">{form.jalur || "-"}</span>
-                        </div>
-                      )}
 
                       <div>
                         <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">

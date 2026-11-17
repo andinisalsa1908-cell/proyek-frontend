@@ -11,7 +11,8 @@ import {
   CheckSquare,
   ActivityIcon,
   BadgePercent,
-  Package
+  Package,
+  MapPin
 } from 'lucide-react';
 import { ImBasecamp } from 'react-icons/im';
 
@@ -26,6 +27,7 @@ const Sidebar = ({ role, onLogout }) => {
           { name: 'Gunung', path: '/super-admin/gunung', icon: <Mountain /> },
           { name: 'Promo', path: '/super-admin/promo', icon: <BadgePercent /> },
           { name: 'Permintaan', path: '/super-admin/permintaan', icon: <ClipboardList /> },
+          { name: 'Lacak Pendaki', path: '/super-admin/tracking', icon: <MapPin /> },
           { name: 'Activity', path: '/super-admin/activity', icon: <ActivityIcon />},
         ];
       case 'admin-gunung':
@@ -34,6 +36,7 @@ const Sidebar = ({ role, onLogout }) => {
           { name: 'Kelola Basecamp', path: '/admin-gunung/kelola-basecamp', icon: <ImBasecamp /> },
           { name: 'Gunung', path: '/admin-gunung/gunung', icon: <Mountain /> },
           { name: 'Pengajuan', path: '/admin-gunung/pengajuan', icon: <ClipboardList /> },
+          { name: 'Lacak Pendaki', path: '/admin-gunung/tracking', icon: <MapPin /> },
           { name: 'Laporan', path: '/admin-gunung/laporan', icon: <FileText />},
         ];
       case 'admin-basecamp':
@@ -42,6 +45,7 @@ const Sidebar = ({ role, onLogout }) => {
           { name: 'Kelola Pendaki', path: '/admin-basecamp/pendaki', icon: <Users /> },
           { name: 'Kelola Peralatan', path: '/admin-basecamp/peralatan', icon: <Package /> },
           { name: 'Validasi Tiket', path: '/admin-basecamp/validasi', icon: <CheckSquare /> },
+          { name: 'Lacak Pendaki', path: '/admin-basecamp/tracking', icon: <MapPin /> },
           { name: 'Laporan', path: '/admin-basecamp/laporan', icon: <FileText /> },
           { name: 'Pengaturan Kuota', path: '/admin-basecamp/kuota', icon: <Settings /> },
         ];

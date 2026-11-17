@@ -164,9 +164,11 @@ export default function TiketSaya() {
                   const tanggal = formatTanggal(
                     ticket.tanggal_naik || ticket.tanggal
                   );
-                  const jalurNama =
-                    ticket.jalur?.nama ||
-                    (typeof ticket.jalur === "string" ? ticket.jalur : null);
+                  const basecampNama =
+                    ticket.basecamp?.nama ||
+                    (typeof ticket.basecamp === "string"
+                      ? ticket.basecamp
+                      : null);
 
                   return (
                     <div
@@ -185,10 +187,10 @@ export default function TiketSaya() {
                             </h3>
                           </div>
 
-                          {jalurNama && (
+                          {basecampNama && (
                             <p className="flex items-center gap-2 text-sm text-slate-500">
                               <MapPin size={15} className="shrink-0" />
-                              Jalur {jalurNama}
+                              Basecamp {basecampNama}
                             </p>
                           )}
 

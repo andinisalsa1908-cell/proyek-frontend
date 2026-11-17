@@ -15,7 +15,6 @@ export default function PesanTiket() {
     gunung_id: searchParams.get("gunung_id") || "",
     tanggal: "",
     jumlah_pendaki: 1,
-    jalur: searchParams.get("jalur") || "",
   });
 
   useEffect(() => {

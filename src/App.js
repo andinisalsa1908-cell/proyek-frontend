@@ -51,6 +51,9 @@ import KelolaBasecampGunung from "./pages/admin-gunung/KelolaBasecamp";
 import PengajuanAdminBasecamp from "./pages/admin-gunung/Pengajuan";
 import LaporanAdminGunung from "./pages/admin-gunung/LaporanAdminGunung";
 
+// ================= TRACKING GPS =================
+import LacakPendaki from "./pages/tracking/LacakPendaki";
+
 function App() {
   return (
     <Router>
@@ -149,6 +152,7 @@ function App() {
         <Route path="/super-admin/promo" element={<AdminLayout role="super-admin"><Promo /></AdminLayout>} />
         <Route path="/super-admin/permintaan" element={<AdminLayout role="super-admin"><Permintaan /></AdminLayout>} />
         <Route path="/super-admin/activity" element={<AdminLayout role="super-admin"><Activity /></AdminLayout>} />
+        <Route path="/super-admin/tracking" element={<AdminLayout role="super-admin"><LacakPendaki /></AdminLayout>} />
 
         {/* ADMIN BASECAMP */}
         <Route path="/admin-basecamp" element={<AdminLayout role="admin-basecamp"><AdminBasecampDash /></AdminLayout>} />
@@ -157,6 +161,7 @@ function App() {
         <Route path="/admin-basecamp/validasi" element={<AdminLayout role="admin-basecamp"><ValidasiTiket /></AdminLayout>} />
         <Route path="/admin-basecamp/laporan" element={<AdminLayout role="admin-basecamp"><LaporanPendaki /></AdminLayout>} />
         <Route path="/admin-basecamp/kuota" element={<AdminLayout role="admin-basecamp"><PengaturanKuotaJalur /></AdminLayout>} />
+        <Route path="/admin-basecamp/tracking" element={<AdminLayout role="admin-basecamp"><LacakPendaki /></AdminLayout>} />
 
         {/* ADMIN GUNUNG */}
         <Route path="/admin-gunung" element={<AdminLayout role="admin-gunung"><AdminGunungDash /></AdminLayout>} />
@@ -164,6 +169,7 @@ function App() {
         <Route path="/admin-gunung/kelola-basecamp" element={<AdminLayout role="admin-gunung"><KelolaBasecampGunung /></AdminLayout>} />
         <Route path="/admin-gunung/pengajuan" element={<AdminLayout role="admin-gunung"><PengajuanAdminBasecamp /></AdminLayout>} />
         <Route path="/admin-gunung/laporan" element={<AdminLayout role="admin-gunung"><LaporanAdminGunung /></AdminLayout>} />
+        <Route path="/admin-gunung/tracking" element={<AdminLayout role="admin-gunung"><LacakPendaki /></AdminLayout>} />
 
         {/* fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

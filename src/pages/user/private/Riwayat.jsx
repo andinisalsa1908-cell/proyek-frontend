@@ -240,10 +240,10 @@ export default function Riwayat() {
                             </h3>
                           </div>
 
-                          {item.jalur?.nama && (
+                          {item.basecamp?.nama && (
                             <p className="flex items-center gap-2 text-sm text-slate-500">
                               <MapPin size={15} className="shrink-0" />
-                              Jalur {item.jalur.nama}
+                              Basecamp {item.basecamp.nama}
                             </p>
                           )}
 

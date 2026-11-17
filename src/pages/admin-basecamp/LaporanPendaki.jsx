@@ -254,7 +254,7 @@ const LaporanPendaki = () => {
 
           {[
             'Pendaki',
-            'Jalur',
+            'Basecamp',
             'Tanggal',
             'Status',
             'Total'
@@ -292,9 +292,9 @@ const LaporanPendaki = () => {
                   {item.user?.name || '-'}
                 </div>
 
-                {/* JALUR */}
+                {/* BASECAMP */}
                 <div className="text-center font-bold text-[#24426d]">
-                  {item.jalur?.nama || '-'}
+                  {item.basecamp?.nama || '-'}
                 </div>
 
                 {/* DATE */}

@@ -27,7 +27,8 @@ const KelolaBasecamp = () => {
     nama: "",
     gunung_id: "",
     lokasi: "",
-    harga_tiket: "",
+    latitude: "",
+    longitude: "",
     foto_utama: null,
   });
 
@@ -53,7 +54,10 @@ const KelolaBasecamp = () => {
       formData.append("nama", current.nama);
       formData.append("gunung_id", current.gunung_id);
       formData.append("lokasi", current.lokasi);
-      formData.append("harga_tiket", current.harga_tiket);
+
+      // Koordinat dipakai sebagai titik pusat basecamp pada peta tracking.
+      formData.append("latitude", current.latitude ?? "");
+      formData.append("longitude", current.longitude ?? "");
 
       if (current.foto_utama) {
         formData.append("foto_utama", current.foto_utama);
@@ -81,7 +85,8 @@ const KelolaBasecamp = () => {
         nama: "",
         gunung_id: "",
         lokasi: "",
-        harga_tiket: "",
+        latitude: "",
+        longitude: "",
         foto_utama: null,
       });
 
@@ -106,7 +111,8 @@ const KelolaBasecamp = () => {
       nama: item.nama,
       gunung_id: item.gunung_id,
       lokasi: item.lokasi,
-      harga_tiket: item.harga_tiket,
+      latitude: item.latitude ?? "",
+      longitude: item.longitude ?? "",
       foto_utama: null,
     });
 
@@ -137,6 +143,44 @@ const KelolaBasecamp = () => {
     }, 3000);
   };
 
+  // Ambil koordinat perangkat untuk mengisi titik basecamp.
+  const useMyLocation = () => {
+    if (!navigator.geolocation) {
+      setNotif({
+        type: "error",
+        message: "Browser tidak mendukung geolokasi",
+      });
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCurrent((prev) => ({
+          ...prev,
+          latitude: position.coords.latitude.toFixed(7),
+          longitude: position.coords.longitude.toFixed(7),
+        }));
+
+        setNotif({
+          type: "success",
+          message: "Koordinat lokasi Anda berhasil diisi",
+        });
+
+        setTimeout(() => setNotif({ type: "", message: "" }), 3000);
+      },
+      () => {
+        setNotif({
+          type: "error",
+          message:
+            "Gagal mengambil lokasi. Izinkan akses lokasi pada browser lalu coba lagi.",
+        });
+
+        setTimeout(() => setNotif({ type: "", message: "" }), 3000);
+      },
+      { enableHighAccuracy: true, timeout: 15000 }
+    );
+  };
+
   return (
     <div className="space-y-8">
 
@@ -159,7 +203,8 @@ const KelolaBasecamp = () => {
               nama: "",
               gunung_id: "",
               lokasi: "",
-              harga_tiket: "",
+              latitude: "",
+              longitude: "",
               foto_utama: null,
             });
 
@@ -186,11 +231,12 @@ const KelolaBasecamp = () => {
       {/* TABLE */}
       <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100">
 
-        <div className="grid grid-cols-6 bg-[#b9d1f1] px-6 py-4 font-bold text-[#24426d]">
+        <div className="grid grid-cols-7 bg-[#b9d1f1] px-6 py-4 font-bold text-[#24426d]">
           <div className="text-center">Foto</div>
           <div className="text-center">Nama</div>
           <div className="text-center">Gunung</div>
           <div className="text-center">Lokasi</div>
+          <div className="text-center">Koordinat</div>
           <div className="text-center">Harga</div>
           <div className="text-center">Aksi</div>
         </div>
@@ -198,7 +244,7 @@ const KelolaBasecamp = () => {
         <div className="divide-y">
           {basecamps.length > 0 ? (
             basecamps.map((item) => (
-              <div key={item.id} className="grid grid-cols-6 px-6 py-5">
+              <div key={item.id} className="grid grid-cols-7 px-6 py-5">
 
                 <div className="flex justify-center">
                   {item.foto_utama ? (
@@ -214,7 +260,22 @@ const KelolaBasecamp = () => {
                 <div className="text-center">{item.nama}</div>
                 <div className="text-center">{item.gunung_id}</div>
                 <div className="text-center">{item.lokasi}</div>
-                <div className="text-center">Rp {item.harga_tiket}</div>
+                <div className="text-center text-xs">
+                  {item.latitude != null && item.longitude != null ? (
+                    <span className="text-[#24426d] font-semibold">
+                      {Number(item.latitude).toFixed(5)},{" "}
+                      {Number(item.longitude).toFixed(5)}
+                    </span>
+                  ) : (
+                    <span className="text-amber-600 italic">
+                      Belum diatur
+                    </span>
+                  )}
+                </div>
+                <div className="text-center">
+                  Rp{" "}
+                  {Number(item.harga_tiket || 0).toLocaleString("id-ID")}
+                </div>
 
                 <div className="flex justify-center gap-4">
 
@@ -319,18 +380,64 @@ const KelolaBasecamp = () => {
                 />
               </div>
 
-              {/* HARGA */}
+              {/* KOORDINAT */}
+              <div className="md:col-span-2 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label>Koordinat Basecamp (untuk peta tracking)</label>
+
+                  <button
+                    type="button"
+                    onClick={useMyLocation}
+                    className="text-xs font-bold text-[#24426d] underline"
+                  >
+                    Gunakan lokasi saya
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input
+                    type="number"
+                    step="any"
+                    min="-90"
+                    max="90"
+                    placeholder="Latitude, contoh -6.914744"
+                    value={current.latitude}
+                    onChange={(e) =>
+                      setCurrent({ ...current, latitude: e.target.value })
+                    }
+                    className="w-full p-4 rounded-2xl border"
+                  />
+
+                  <input
+                    type="number"
+                    step="any"
+                    min="-180"
+                    max="180"
+                    placeholder="Longitude, contoh 107.609810"
+                    value={current.longitude}
+                    onChange={(e) =>
+                      setCurrent({ ...current, longitude: e.target.value })
+                    }
+                    className="w-full p-4 rounded-2xl border"
+                  />
+                </div>
+
+                <p className="text-xs text-gray-500">
+                  Titik ini menjadi pusat peta dan acuan peringatan bila
+                  pendaki memulai tracking lebih dari 1 km dari basecamp.
+                </p>
+              </div>
+
+              {/* HARGA diatur oleh Admin Basecamp */}
               <div className="space-y-2">
                 <label>Harga Tiket</label>
-                <input
-                  type="number"
-                  value={current.harga_tiket}
-                  onChange={(e) =>
-                    setCurrent({ ...current, harga_tiket: e.target.value })
-                  }
-                  className="w-full p-4 rounded-2xl border"
-                  required
-                />
+                <div className="w-full p-4 rounded-2xl border bg-gray-50 text-gray-500">
+                  {current.id
+                    ? `Rp ${Number(
+                        basecamps.find((b) => b.id === current.id)?.harga_tiket || 0
+                      ).toLocaleString("id-ID")}`
+                    : "Diatur oleh Admin Basecamp setelah basecamp dibuat"}
+                </div>
               </div>
 
               {/* FOTO */}
